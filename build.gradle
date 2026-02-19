@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.0.2'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.ecommerce'
+version = '0.0.1-SNAPSHOT'
+description = 'E-commerce_Backoffice'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Data JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // Spring Web
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    // SQL
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    // Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+
+    // UnitTest
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

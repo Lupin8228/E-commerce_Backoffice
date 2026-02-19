@@ -1,0 +1,39 @@
+package com.ecommerce.backoffice.global.error;
+
+
+import com.ecommerce.backoffice.global.common.ApiResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    /**
+     * Validation Error
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse<Void>> handleValidError(MethodArgumentNotValidException e) {
+        String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.fail(
+                        HttpStatus.BAD_REQUEST.value(), "VALIDATION_ERROR", errorMessage
+                ));
+    }
+
+
+    /**
+     * Custom Error
+     */
+    @ExceptionHandler(CommonException.class)
+    public ResponseEntity<ApiResponse<Void>> handleException(CommonException e) {
+        CommonError errorCode = e.getCommonError();
+        return ResponseEntity.status(errorCode.getStatus())
+                .body(ApiResponse.fail(errorCode));
+    }
+
+
+}
