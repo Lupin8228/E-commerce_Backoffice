@@ -92,6 +92,17 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
+    // 관리자 승인
+    @PatchMapping("/{adminId}/approve")
+    public ResponseEntity<DecisionAdminResponse> approve(
+            @PathVariable Long adminId,
+            HttpServletRequest request
+    ) {
+        sessionAdminContext.requireSuperAdmin(request);
+        DecisionAdminResponse response = adminService.approveAdmin(adminId);
+        return ResponseEntity.ok(response);
+    }
+
 
 
 }

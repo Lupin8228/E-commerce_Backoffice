@@ -1,5 +1,6 @@
 package com.ecommerce.backoffice.domain.admin.service;
 
+
 import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRequest;
 import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRoleRequest;
 import com.ecommerce.backoffice.domain.admin.dto.response.DecisionAdminResponse;
@@ -14,6 +15,8 @@ import com.ecommerce.backoffice.global.error.CommonException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -90,4 +93,17 @@ public class AdminService {
         adminRepository.delete(admin);
     }
 
+    // 관리자 승인
+    @Transactional
+    public DecisionAdminResponse approveAdmin(Long adminId) {
+        Admin admin = adminRepository.findById(adminId)
+                .orElseThrow(
+                        () -> new CommonException(CommonError.ADMIN_NOT_FOUND)
+                );
+        if (admin.getStatus() != AdminStatus.PENDING) {
+            throw new CommonException(CommonError.ADMIN_NOT_PENDING);
+        }
+        admin.approve(LocalDateTime.now());
+        return DecisionAdminResponse.from(admin);
+    }
 }
