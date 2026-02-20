@@ -4,6 +4,7 @@ import com.ecommerce.backoffice.domain.admin.entity.Admin;
 import com.ecommerce.backoffice.domain.customer.entity.Customer;
 import com.ecommerce.backoffice.domain.order.enums.OrderStatus;
 import com.ecommerce.backoffice.domain.product.entity.Product;
+import com.ecommerce.backoffice.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,36 +21,23 @@ import java.time.LocalDateTime;
 @Table(name = "orders")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class Order {
-
+public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 주문번호 예시 : 20260116-001
-    @Column(nullable = false, unique = true, length = 50)
-    private String orderNum;
+    @Column(nullable = false, unique = true)
+    private String orderNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;
 
     @Column(nullable = false)
-    private int totalPrice;
+    private Long totalPrice;
 
     @Column(nullable = false)
     private int quantity;
-
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedAt;
-
-    private LocalDateTime confirmedAt;
-
-    private LocalDateTime canceledAt;
 
     @Column(length = 255)
     private String cancelReason;
@@ -67,14 +55,23 @@ public class Order {
     private Admin admin;
 
     @Builder
-    public Order(String orderNum, OrderStatus status, int totalPrice, int quantity,
+    public Order(String orderNumber, OrderStatus status, Long totalPrice, int quantity,
                  Customer customer, Product product, Admin admin) {
-        this.orderNum = orderNum;
+        this.orderNumber = orderNumber;
         this.status = status;
         this.totalPrice = totalPrice;
         this.quantity = quantity;
         this.customer = customer;
         this.product = product;
         this.admin = admin;
+    }
+
+    public void updateStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    public void updateStatusAndCancelReason(OrderStatus status, String cancelReason) {
+        this.status = status;
+        this.cancelReason = cancelReason;
     }
 }
