@@ -1,4 +1,9 @@
 package com.ecommerce.backoffice.domain.admin.repository;
 
-public interface AdminRepository {
+import com.ecommerce.backoffice.domain.admin.entity.Admin;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AdminRepository extends JpaRepository<Admin, Long> {
+
+    boolean existsByEmailAndIdNot(String newEmail, Long adminId);
 }

@@ -1,5 +1,8 @@
 package com.ecommerce.backoffice.domain.admin.entity;
 
+
+
+import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRequest;
 import com.ecommerce.backoffice.domain.admin.enums.AdminRole;
 import com.ecommerce.backoffice.domain.admin.enums.AdminStatus;
 import com.ecommerce.backoffice.global.common.BaseEntity;
@@ -8,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +19,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "admins")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE admins SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
 public class Admin extends BaseEntity {
 
     @Id
@@ -62,5 +67,16 @@ public class Admin extends BaseEntity {
         this.role = role;
         this.status = status;
     }
+
+    public void updateInfo(String newName, String newEmail, String newPhone) {
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+    }
+
+    public void updateAdminRole(AdminRole role) {
+        this.role = role;
+    }
+
 
 }
