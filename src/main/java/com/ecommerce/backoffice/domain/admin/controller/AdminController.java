@@ -4,10 +4,8 @@ package com.ecommerce.backoffice.domain.admin.controller;
 import com.ecommerce.backoffice.domain.admin.dto.request.RejectAdminRequest;
 import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRequest;
 import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRoleRequest;
-import com.ecommerce.backoffice.domain.admin.dto.response.DecisionAdminResponse;
-import com.ecommerce.backoffice.domain.admin.dto.response.GetAdminDetailResponse;
-import com.ecommerce.backoffice.domain.admin.dto.response.UpdateAdminResponse;
-import com.ecommerce.backoffice.domain.admin.dto.response.UpdateAdminRoleResponse;
+import com.ecommerce.backoffice.domain.admin.dto.response.*;
+import com.ecommerce.backoffice.domain.admin.dto.session.SessionAdmin;
 import com.ecommerce.backoffice.domain.admin.dto.session.SessionAdminContext;
 import com.ecommerce.backoffice.domain.admin.service.AdminService;
 import com.ecommerce.backoffice.global.common.ApiResponse;
@@ -118,9 +116,16 @@ public class AdminController {
     }
 
     // 내 프로필 조회
+    @GetMapping("/me/profile")
+    public ResponseEntity<GetProfileResponse> myProfile(
+            HttpServletRequest request
+    ) {
+        SessionAdmin me = sessionAdminContext.requireLogin(request);
+        GetProfileResponse response = adminService.getMyProfile(me.id());
+        return ResponseEntity.ok(response);
+    }
 
-
-
+    // 내 프로필 수정
 
 }
 

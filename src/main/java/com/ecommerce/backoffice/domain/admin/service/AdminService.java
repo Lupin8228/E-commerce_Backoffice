@@ -4,10 +4,7 @@ package com.ecommerce.backoffice.domain.admin.service;
 import com.ecommerce.backoffice.domain.admin.dto.request.RejectAdminRequest;
 import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRequest;
 import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRoleRequest;
-import com.ecommerce.backoffice.domain.admin.dto.response.DecisionAdminResponse;
-import com.ecommerce.backoffice.domain.admin.dto.response.GetAdminDetailResponse;
-import com.ecommerce.backoffice.domain.admin.dto.response.UpdateAdminResponse;
-import com.ecommerce.backoffice.domain.admin.dto.response.UpdateAdminRoleResponse;
+import com.ecommerce.backoffice.domain.admin.dto.response.*;
 import com.ecommerce.backoffice.domain.admin.dto.session.TimeProvider;
 import com.ecommerce.backoffice.domain.admin.entity.Admin;
 import com.ecommerce.backoffice.domain.admin.enums.AdminStatus;
@@ -98,7 +95,7 @@ public class AdminService {
         return DecisionAdminResponse.from(admin);
     }
 
-    // 거부
+    // 관리자 거부
     @Transactional
     public DecisionAdminResponse rejectAdmin(Long adminId, RejectAdminRequest requestBody) {
         Admin admin = adminRepository.findById(adminId)
@@ -114,5 +111,12 @@ public class AdminService {
         return DecisionAdminResponse.from(admin);
     }
 
+    // 내 프로필 조회
+    public GetProfileResponse getMyProfile(Long id) {
+        Admin admin = adminRepository.findById(id).orElseThrow(
+                () -> new CommonException(CommonError.ADMIN_NOT_FOUND)
+        );
+        return new GetProfileResponse(admin.getName(), admin.getEmail(), admin.getPhone());
+    }
 
 }

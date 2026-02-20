@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SessionAdminContext {
 
-    // 세션 없으면 401, role 아니면 403
+    // 로그인 필수 세션,로그인 정보 없으면 NOT_LOGGED_IN 반환
     public SessionAdmin requireLogin(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
@@ -23,13 +23,15 @@ public class SessionAdminContext {
         }
 
         Object value = session.getAttribute(SessionKey.LOGIN_ADMIN);
-        if (value == null) {
+
+        if (!(value instanceof SessionAdmin)) {
             throw new CommonException(CommonError.ADMIN_NOT_LOGGED_IN);
         }
 
         return (SessionAdmin) value;
     }
 
+    // 슈퍼 관리자 필수, 로그인은 requireLogin에서 처리하고, 권한만 여기서 체크
     public SessionAdmin requireSuperAdmin(HttpServletRequest request) {
         SessionAdmin loginAdmin = requireLogin(request);
         if (loginAdmin.role() != AdminRole.SUPER_ADMIN) {
