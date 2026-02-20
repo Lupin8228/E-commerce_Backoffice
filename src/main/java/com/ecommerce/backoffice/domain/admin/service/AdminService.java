@@ -1,12 +1,14 @@
 package com.ecommerce.backoffice.domain.admin.service;
 
 
+import com.ecommerce.backoffice.domain.admin.dto.request.RejectAdminRequest;
 import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRequest;
 import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRoleRequest;
 import com.ecommerce.backoffice.domain.admin.dto.response.DecisionAdminResponse;
 import com.ecommerce.backoffice.domain.admin.dto.response.GetAdminDetailResponse;
 import com.ecommerce.backoffice.domain.admin.dto.response.UpdateAdminResponse;
 import com.ecommerce.backoffice.domain.admin.dto.response.UpdateAdminRoleResponse;
+import com.ecommerce.backoffice.domain.admin.dto.session.TimeProvider;
 import com.ecommerce.backoffice.domain.admin.entity.Admin;
 import com.ecommerce.backoffice.domain.admin.enums.AdminStatus;
 import com.ecommerce.backoffice.domain.admin.repository.AdminRepository;
@@ -22,6 +24,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class AdminService {
     private final AdminRepository adminRepository;
+    private final TimeProvider timeProvider;
 
     // 관리자 상세 조회
     @Transactional(readOnly = true)
@@ -45,9 +48,7 @@ public class AdminService {
 
         boolean hasAny = (requestBody.name() != null) || (requestBody.email() != null) || (requestBody.phone() != null);
 
-        if (!hasAny) {
-            throw new CommonException(CommonError.INVALID_UPDATE_REQUEST);
-        }
+        if (!hasAny) {throw new CommonException(CommonError.INVALID_UPDATE_REQUEST);}
 
         String newName = (requestBody.name() == null) ? admin.getName() : requestBody.name();
         String newEmail = (requestBody.email() == null) ? admin.getEmail() : requestBody.email();
@@ -62,17 +63,7 @@ public class AdminService {
         }
 
         admin.updateInfo(newName, newEmail, newPhone);
-
-        return new UpdateAdminResponse(
-                admin.getId(),
-                admin.getName(),
-                admin.getEmail(),
-                admin.getPhone(),
-                admin.getRole(),
-                admin.getStatus(),
-                admin.getCreatedAt(),
-                admin.getApprovedAt()
-        );
+        return UpdateAdminResponse.from(admin);
     }
 
     // 관리자 역할 변경
@@ -103,7 +94,25 @@ public class AdminService {
         if (admin.getStatus() != AdminStatus.PENDING) {
             throw new CommonException(CommonError.ADMIN_NOT_PENDING);
         }
-        admin.approve(LocalDateTime.now());
+        admin.approve(timeProvider.now());
         return DecisionAdminResponse.from(admin);
     }
+
+    // 거부
+    @Transactional
+    public DecisionAdminResponse rejectAdmin(Long adminId, RejectAdminRequest requestBody) {
+        Admin admin = adminRepository.findById(adminId)
+                .orElseThrow(
+                        () -> new CommonException(CommonError.ADMIN_NOT_FOUND)
+                );
+
+        if (admin.getStatus() != AdminStatus.PENDING) {
+            throw new CommonException(CommonError.ADMIN_NOT_PENDING);
+        }
+
+        admin.reject(timeProvider.now(), requestBody.reason());
+        return DecisionAdminResponse.from(admin);
+    }
+
+
 }

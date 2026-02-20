@@ -85,8 +85,9 @@ public class Admin extends BaseEntity {
         this.rejectedReason = null;
     }
 
-    public AdminStatus getStatus() {
-        return status;
+    public void reject(LocalDateTime now, String reason) {
+        this.status = AdminStatus.REJECTED;
+        this.rejectedAt = now;
+        this.rejectedReason = reason;
     }
-
 }

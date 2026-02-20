@@ -1,6 +1,7 @@
 package com.ecommerce.backoffice.domain.admin.controller;
 
 
+import com.ecommerce.backoffice.domain.admin.dto.request.RejectAdminRequest;
 import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRequest;
 import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRoleRequest;
 import com.ecommerce.backoffice.domain.admin.dto.response.DecisionAdminResponse;
@@ -102,6 +103,22 @@ public class AdminController {
         DecisionAdminResponse response = adminService.approveAdmin(adminId);
         return ResponseEntity.ok(response);
     }
+
+    // 거부
+    @PatchMapping("/{adminId}/reject")
+    public ResponseEntity<DecisionAdminResponse> reject(
+            @PathVariable Long adminId,
+            @Valid @RequestBody RejectAdminRequest requestBody,
+            HttpServletRequest request
+    ) {
+        sessionAdminContext.requireSuperAdmin(request);
+
+        DecisionAdminResponse response = adminService.rejectAdmin(adminId, requestBody);
+        return ResponseEntity.ok(response);
+    }
+
+    // 내 프로필 조회
+
 
 
 
