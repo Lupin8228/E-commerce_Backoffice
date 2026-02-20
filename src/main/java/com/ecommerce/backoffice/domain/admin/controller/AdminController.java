@@ -6,20 +6,43 @@ import com.ecommerce.backoffice.domain.admin.dto.response.*;
 import com.ecommerce.backoffice.domain.admin.dto.session.SessionAdmin;
 import com.ecommerce.backoffice.domain.admin.dto.session.SessionAdminContext;
 import com.ecommerce.backoffice.domain.admin.service.AdminService;
+import com.ecommerce.backoffice.global.common.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admins")
+@RequestMapping("/api/admin")
 public class AdminController {
 
     private final AdminService adminService;
     private final SessionAdminContext sessionAdminContext;
 
+    @PostMapping("/signup")
+    public ResponseEntity<ApiResponse<AdminSignUpResponse>> signUp(
+            @Valid @RequestBody AdminSignUpRequest request
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(adminService.signUp(request))
+                );
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<AdminLoginResponse>> login(
+            @Valid @RequestBody AdminLoginRequest request,
+            HttpServletRequest sessionRequest
+    ) {
+        AdminLoginResponse response = adminService.login(request, sessionRequest);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(response));
+    }
 //    // 관리자 리스트 조회(검색/페이징/정렬/역할/상태)
 //    @GetMapping
 //    public ResponseEntity<AdminListResponse> list(
