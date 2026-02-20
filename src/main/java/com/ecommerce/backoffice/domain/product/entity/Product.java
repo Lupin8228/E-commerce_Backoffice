@@ -44,7 +44,7 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "created_admin_id", nullable = false)
     private Admin createdBy;
 
-    private Product(String name, ProductCategory category, Long price, Integer stock, ProductStatus status, Admin createdBy) {
+    public Product(String name, ProductCategory category, Long price, Integer stock, ProductStatus status, Admin createdBy) {
         this.name = name;
         this.category = category;
         this.price = price;
@@ -53,4 +53,9 @@ public class Product extends BaseEntity {
         this.createdBy = createdBy;
     }
 
+    public void updateProduct(String name, ProductCategory category, Long price){
+        this.name = name;
+        this.category = category;
+        this.price = price;
+    }
 }

@@ -3,9 +3,9 @@ package com.ecommerce.backoffice.domain.order.service;
 import com.ecommerce.backoffice.domain.customer.entity.Customer;
 import com.ecommerce.backoffice.domain.customer.repository.CustomerRepository;
 import com.ecommerce.backoffice.domain.order.dto.request.CreateOrderRequest;
-import com.ecommerce.backoffice.domain.order.dto.request.OrderSearchRequest;
+//import com.ecommerce.backoffice.domain.order.dto.request.OrderSearchRequest;
 import com.ecommerce.backoffice.domain.order.dto.response.CreateOrderResponse;
-import com.ecommerce.backoffice.domain.order.dto.response.GetOrderResponse;
+//import com.ecommerce.backoffice.domain.order.dto.response.GetOrderResponse;
 import com.ecommerce.backoffice.domain.order.entity.Order;
 import com.ecommerce.backoffice.domain.order.enums.OrderStatus;
 import com.ecommerce.backoffice.domain.order.repository.OrderRepository;
@@ -69,7 +69,7 @@ public class OrderService {
 
         return CreateOrderResponse.of(order.getOrderNumber(), order.getCustomer(), order.getProduct());
     }
-
+/*
     // 주문 목록 조회
     @Transactional(readOnly = true)
     public List<GetOrderResponse> findOrders(HttpSession session, OrderSearchRequest request) {
@@ -85,5 +85,5 @@ public class OrderService {
                 .stream()
                 .map(GetOrderResponse::of)
                 .toList();
-    }
+    }*/
 }
