@@ -1,5 +1,8 @@
 package com.ecommerce.backoffice.domain.admin.entity;
 
+
+
+import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRequest;
 import com.ecommerce.backoffice.domain.admin.enums.AdminRole;
 import com.ecommerce.backoffice.domain.admin.enums.AdminStatus;
 import com.ecommerce.backoffice.global.common.BaseEntity;
@@ -8,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +19,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "admins")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE admins SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
 public class Admin extends BaseEntity {
 
     @Id
@@ -62,15 +67,30 @@ public class Admin extends BaseEntity {
         this.status = status;
     }
 
-    public void approve(LocalDateTime approvedAt) {
+    public void updateInfo(String newName, String newEmail, String newPhone) {
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+    }
+
+    public void updateAdminRole(AdminRole role) {
+        this.role = role;
+    }
+
+    public void approve(LocalDateTime now) {
         this.status = AdminStatus.APPROVED;
-        this.approvedAt = approvedAt;
+        this.approvedAt = now;
+        this.rejectedAt = null;
+        this.rejectedReason = null;
     }
 
-    public void reject(String reason, LocalDateTime rejectedAt) {
+    public void reject(LocalDateTime now, String reason) {
         this.status = AdminStatus.REJECTED;
+        this.rejectedAt = now;
         this.rejectedReason = reason;
-        this.rejectedAt = rejectedAt;
     }
 
+    public void changePasswordHash(String newPasswordHash) {
+        this.password = newPasswordHash;
+    }
 }
