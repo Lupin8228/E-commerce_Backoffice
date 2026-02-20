@@ -1,4 +1,89 @@
 package com.ecommerce.backoffice.domain.order.service;
 
+import com.ecommerce.backoffice.domain.customer.entity.Customer;
+import com.ecommerce.backoffice.domain.customer.repository.CustomerRepository;
+import com.ecommerce.backoffice.domain.order.dto.request.CreateOrderRequest;
+import com.ecommerce.backoffice.domain.order.dto.request.OrderSearchRequest;
+import com.ecommerce.backoffice.domain.order.dto.response.CreateOrderResponse;
+import com.ecommerce.backoffice.domain.order.dto.response.GetOrderResponse;
+import com.ecommerce.backoffice.domain.order.entity.Order;
+import com.ecommerce.backoffice.domain.order.enums.OrderStatus;
+import com.ecommerce.backoffice.domain.order.repository.OrderRepository;
+import com.ecommerce.backoffice.domain.order.utils.OrderNumberGenerator;
+import com.ecommerce.backoffice.domain.product.entity.Product;
+import com.ecommerce.backoffice.domain.product.repository.ProductRepository;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
 public class OrderService {
+
+    private final CustomerRepository customerRepository;
+    private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
+    //    private final AdminRepository adminRepository;
+    private final OrderNumberGenerator orderNumberGenerator;
+
+
+    // 주문 생성
+    @Transactional
+    public CreateOrderResponse save(HttpSession session, CreateOrderRequest request) {
+        // Admin admin = getLoginAdmin(session); <- 아직 구현안됨
+
+        // 관리자 조회
+//        Admin admin = (Long) session.getAttribute("LOGIN_ADMIN");
+//        if(admin == null) {
+//            throw new RuntimeException("관리자 계정에 로그인하시기 바랍니다.");
+//        }
+
+        // 사용자 조회
+        Customer customer = customerRepository.findById(request.customerId())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        // 상품 조회
+        Product product = productRepository.findById(request.productId())
+                .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
+
+        // 상품 재고 확인
+        if (product.getStock() < request.quantity()) {
+            throw new RuntimeException("재고가 부족합니다.");
+        }
+        // product.decreeaseStock(request.quantity()); <- 아직 구현안됨
+
+        Order order = Order.builder()
+                .orderNumber(orderNumberGenerator.generate())
+                .status(OrderStatus.READY)
+                .totalPrice(product.getPrice() * request.quantity())
+                .quantity(request.quantity())
+                .customer(customer)
+                .product(product)
+                // .admin(admin) <- 아직 구현안됨
+                .build();
+
+        return CreateOrderResponse.of(order.getOrderNumber(), order.getCustomer(), order.getProduct());
+    }
+
+    // 주문 목록 조회
+    @Transactional(readOnly = true)
+    public List<GetOrderResponse> findOrders(HttpSession session, OrderSearchRequest request) {
+        // Admin admin = getLoginAdmin(session); <- 아직 구현안됨
+
+        String keyword = request.keyword();
+        int page = request.page() == null ? 1 : request.page();
+        int size = request.size() == null ? 10 : request.size();
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return orderRepository.findAll()
+                .stream()
+                .map(GetOrderResponse::of)
+                .toList();
+    }
 }
