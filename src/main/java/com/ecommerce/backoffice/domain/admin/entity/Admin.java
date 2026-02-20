@@ -90,4 +90,8 @@ public class Admin extends BaseEntity {
         this.rejectedAt = now;
         this.rejectedReason = reason;
     }
+
+    public void changePasswordHash(String newPasswordHash) {
+        this.passwordHash = newPasswordHash;
+    }
 }

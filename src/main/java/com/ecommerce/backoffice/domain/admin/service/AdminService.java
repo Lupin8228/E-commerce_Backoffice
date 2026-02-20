@@ -1,10 +1,7 @@
 package com.ecommerce.backoffice.domain.admin.service;
 
 
-import com.ecommerce.backoffice.domain.admin.dto.request.RejectAdminRequest;
-import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRequest;
-import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRoleRequest;
-import com.ecommerce.backoffice.domain.admin.dto.request.UpdateProfileRequest;
+import com.ecommerce.backoffice.domain.admin.dto.request.*;
 import com.ecommerce.backoffice.domain.admin.dto.response.*;
 import com.ecommerce.backoffice.domain.admin.dto.session.TimeProvider;
 import com.ecommerce.backoffice.domain.admin.entity.Admin;
@@ -13,6 +10,7 @@ import com.ecommerce.backoffice.domain.admin.repository.AdminRepository;
 import com.ecommerce.backoffice.global.error.CommonError;
 import com.ecommerce.backoffice.global.error.CommonException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminService {
     private final AdminRepository adminRepository;
     private final TimeProvider timeProvider;
-
+    private final PasswordEncoder passwordEncoder;
     // 관리자 상세 조회
     @Transactional(readOnly = true)
     public GetAdminDetailResponse getOne(Long adminId) {
@@ -147,5 +145,22 @@ public class AdminService {
         return new UpdateProfileResponse(admin.getName(), admin.getEmail(), admin.getPhone());
     }
 
+    // 내 비밀 번호 변경
+    @Transactional
+    public UpdatePasswordResponse changePassword(Long id, UpdatePasswordRequest requestBody) {
+
+        Admin admin = adminRepository.findById(id).orElseThrow(
+                () -> new CommonException(CommonError.ADMIN_NOT_FOUND)
+        );
+
+        if (!passwordEncoder.matches(requestBody.currentPassword(), admin.getPasswordHash())) {
+            throw new CommonException(CommonError.CURRENT_PASSWORD_MISMATCH);
+        }
+
+        String newHash = passwordEncoder.encode(requestBody.newPassword());
+        admin.changePasswordHash(newHash);
+
+        return new UpdatePasswordResponse(admin.getId(), "비밀번호가 변경되었습니다.");
+    }
 
 }

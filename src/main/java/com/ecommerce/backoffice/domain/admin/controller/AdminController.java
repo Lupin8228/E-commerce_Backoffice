@@ -1,17 +1,12 @@
 package com.ecommerce.backoffice.domain.admin.controller;
 
 
-import com.ecommerce.backoffice.domain.admin.dto.request.RejectAdminRequest;
-import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRequest;
-import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRoleRequest;
-import com.ecommerce.backoffice.domain.admin.dto.request.UpdateProfileRequest;
+import com.ecommerce.backoffice.domain.admin.dto.request.*;
 import com.ecommerce.backoffice.domain.admin.dto.response.*;
 import com.ecommerce.backoffice.domain.admin.dto.session.SessionAdmin;
 import com.ecommerce.backoffice.domain.admin.dto.session.SessionAdminContext;
 import com.ecommerce.backoffice.domain.admin.service.AdminService;
-import com.ecommerce.backoffice.global.common.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -134,6 +129,17 @@ public class AdminController {
     ) {
         SessionAdmin me = sessionAdminContext.requireLogin(request);
         UpdateProfileResponse response = adminService.updateProfile(me.id(), requestBody);
+        return ResponseEntity.ok(response);
+    }
+
+    // 내 비밀 번호 변경
+    @PatchMapping("/me/password")
+    public ResponseEntity<UpdatePasswordResponse> changeMyPassword(
+            @Valid @RequestBody UpdatePasswordRequest requestBody,
+            HttpServletRequest request
+    ) {
+        SessionAdmin me = sessionAdminContext.requireLogin(request);
+        UpdatePasswordResponse response = adminService.changePassword(me.id(), requestBody);
         return ResponseEntity.ok(response);
     }
 

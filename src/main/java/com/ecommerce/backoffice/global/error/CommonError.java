@@ -20,7 +20,8 @@ public enum CommonError {
     ADMIN_NOT_LOGGED_IN(UNAUTHORIZED, "A106", "로그인이 필요합니다."),
     FORBIDDEN_SUPER_ADMIN_ONLY(FORBIDDEN, "A201", "슈퍼 관리자만 접근할 수 있습니다."),
     INVALID_UPDATE_REQUEST(BAD_REQUEST, "A302", "수정할 값이 없습니다."),
-    ADMIN_NOT_PENDING(BAD_REQUEST, "A401", "승인대기 상태에서만 처리할 수 있습니다.");
+    ADMIN_NOT_PENDING(BAD_REQUEST, "A401", "승인대기 상태에서만 처리할 수 있습니다."),
+    CURRENT_PASSWORD_MISMATCH(BAD_REQUEST, "A501", "현재 비밀번호가 일치하지 않습니다.");
 
     private final HttpStatus status;
     private final String code;
