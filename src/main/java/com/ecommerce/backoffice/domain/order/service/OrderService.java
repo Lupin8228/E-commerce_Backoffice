@@ -59,7 +59,7 @@ public class OrderService {
 
         Order order = Order.builder()
                 .orderNumber(orderNumberGenerator.generate())
-                .status(OrderStatus.READY)
+                .status(OrderStatus.PREPARING)
                 .totalPrice(product.getPrice() * request.quantity())
                 .quantity(request.quantity())
                 .customer(customer)

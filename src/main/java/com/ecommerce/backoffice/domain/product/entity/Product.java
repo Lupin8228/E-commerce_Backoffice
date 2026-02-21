@@ -58,4 +58,21 @@ public class Product extends BaseEntity {
         this.category = category;
         this.price = price;
     }
+
+    public void increaseStock(int quantity) {
+        this.stock += quantity;
+    }
+
+    public void updateStatusByStock() {
+
+        if (this.status == ProductStatus.DISCONTINUED) {
+            return;
+        }
+
+        if (this.stock <= 0) {
+            this.status = ProductStatus.OUT_OF_STOCK;
+        } else {
+            this.status = ProductStatus.ON_SALE;
+        }
+    }
 }
