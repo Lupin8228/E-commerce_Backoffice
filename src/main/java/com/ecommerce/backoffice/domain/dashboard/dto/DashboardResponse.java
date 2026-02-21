@@ -1,5 +1,9 @@
 package com.ecommerce.backoffice.domain.dashboard.dto;
 
+import com.ecommerce.backoffice.domain.dashboard.dto.chart.DashboardChartResponse;
+import com.ecommerce.backoffice.domain.dashboard.dto.recentOrder.RecentOrderResponse;
+import com.ecommerce.backoffice.domain.dashboard.dto.summary.DashboardSummaryResponse;
+import com.ecommerce.backoffice.domain.dashboard.dto.widget.DashboardWidgetResponse;
 import lombok.Builder;
 
 import java.util.List;

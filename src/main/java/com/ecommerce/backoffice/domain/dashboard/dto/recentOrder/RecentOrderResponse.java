@@ -1,4 +1,4 @@
-package com.ecommerce.backoffice.domain.dashboard.dto;
+package com.ecommerce.backoffice.domain.dashboard.dto.recentOrder;
 
 import com.ecommerce.backoffice.domain.order.enums.OrderStatus;
 
