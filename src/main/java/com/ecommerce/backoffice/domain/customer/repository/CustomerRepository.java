@@ -14,9 +14,8 @@ import java.util.Optional;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-    Page<Customer> findAll(Pageable pageable);
     Optional<Customer> findByIdAndDeletedFalse(Long id);
-
+    Page<Customer> findAllByDeletedFalse(Pageable pageable);
     Long countByDeletedFalse();
 
     Long countByStatusAndDeletedFalse(CustomerStatus customerStatus);

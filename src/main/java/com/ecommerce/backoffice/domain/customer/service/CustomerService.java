@@ -1,5 +1,7 @@
 package com.ecommerce.backoffice.domain.customer.service;
 
+import com.ecommerce.backoffice.domain.customer.dto.request.UpdateCustomerRequest;
+import com.ecommerce.backoffice.domain.customer.dto.request.UpdateStatusRequest;
 import com.ecommerce.backoffice.domain.customer.dto.response.GetCustomerResponse;
 import com.ecommerce.backoffice.domain.customer.dto.response.PageResponse;
 import com.ecommerce.backoffice.domain.customer.entity.Customer;
@@ -20,7 +22,8 @@ public class CustomerService {
 
     // 전체 조회
     public PageResponse<GetCustomerResponse> getCustomers(Pageable pageable) {
-        Page<GetCustomerResponse> page = customerRepository.findAll(pageable).map(GetCustomerResponse::from);
+        Page<GetCustomerResponse> page = customerRepository.findAllByDeletedFalse(pageable)
+                .map(GetCustomerResponse::from);
         return PageResponse.from(page);
 
 
@@ -30,6 +33,24 @@ public class CustomerService {
 
         Customer customer = customerRepository.findByIdAndDeletedFalse(id).orElseThrow(
                 ()->new CommonException(CommonError.CUSTOMER_NOT_FOUND));
+        return GetCustomerResponse.from(customer);
+    }
+
+    // 정보 업데이트(이름,이메일,전화번호)
+    @Transactional
+    public GetCustomerResponse updateCustomer(Long id, UpdateCustomerRequest request) {
+        Customer customer = customerRepository.findByIdAndDeletedFalse(id).orElseThrow(
+                ()->new CommonException(CommonError.CUSTOMER_NOT_FOUND));
+        customer.updateCustomer(request.name(), request.email(), request.phone());
+        return GetCustomerResponse.from(customer);
+    }
+
+    // 상태 업데이트
+    @Transactional
+    public GetCustomerResponse updateStatus(Long id, UpdateStatusRequest request) {
+        Customer customer = customerRepository.findByIdAndDeletedFalse(id).orElseThrow(
+                ()->new CommonException(CommonError.CUSTOMER_NOT_FOUND));
+        customer.updateStatus(request.status());
         return GetCustomerResponse.from(customer);
     }
 }
