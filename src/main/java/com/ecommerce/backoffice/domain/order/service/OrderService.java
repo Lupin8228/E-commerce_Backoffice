@@ -7,6 +7,7 @@ import com.ecommerce.backoffice.domain.order.dto.request.CreateOrderRequest;
 import com.ecommerce.backoffice.domain.order.dto.request.OrderSearchRequest;
 import com.ecommerce.backoffice.domain.order.dto.response.CreateOrderResponse;
 import com.ecommerce.backoffice.domain.order.dto.response.GetOrderResponse;
+import com.ecommerce.backoffice.domain.order.dto.response.GetOrdersResponse;
 import com.ecommerce.backoffice.domain.order.entity.Order;
 import com.ecommerce.backoffice.domain.order.enums.OrderStatus;
 import com.ecommerce.backoffice.domain.order.repository.OrderRepository;
@@ -21,8 +22,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -75,7 +74,7 @@ public class OrderService {
 
     // 주문 목록 조회
     @Transactional(readOnly = true)
-    public Page<GetOrderResponse> findOrders(
+    public Page<GetOrdersResponse> findOrders(
             OrderSearchRequest request,
             int page,
             int size
@@ -91,6 +90,27 @@ public class OrderService {
                 Sort.by(dir, request.sortBy()));
 
         return orderRepository.searchOrders(request, pageable)
-                .map(GetOrderResponse::of);
+                .map(GetOrdersResponse::of);
+    }
+
+    // 주문 상세 조회
+    @Transactional(readOnly = true)
+    public GetOrderResponse getOne(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                () -> new RuntimeException("존재하지 않는 주문입니다.")
+        );
+        return new GetOrderResponse(
+                order.getOrderNumber(),
+                order.getCustomer().getName(),
+                order.getCustomer().getEmail(),
+                order.getProduct().getName(),
+                order.getQuantity(),
+                order.getTotalPrice(),
+                order.getCreatedAt(),
+                order.getStatus().name(),
+                order.getAdmin().getName(),
+                order.getAdmin().getEmail(),
+                order.getAdmin().getRole().name()
+        );
     }
 }
