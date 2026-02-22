@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long>, OrderRepositoryCustom {
     List<Order> findByCustomerId(Long customerId);
 
     @Query("""
