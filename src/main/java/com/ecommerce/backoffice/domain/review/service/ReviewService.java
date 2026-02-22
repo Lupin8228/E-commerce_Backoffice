@@ -7,14 +7,17 @@ import com.ecommerce.backoffice.domain.product.repository.ProductRepository;
 import com.ecommerce.backoffice.domain.review.dto.request.CreateReviewRequest;
 import com.ecommerce.backoffice.domain.review.dto.response.CreateReviewResponse;
 import com.ecommerce.backoffice.domain.review.dto.response.GetDetailReviewResponse;
+import com.ecommerce.backoffice.domain.review.dto.response.GetReviewPageResponse;
 import com.ecommerce.backoffice.domain.review.dto.response.GetReviewResponse;
 import com.ecommerce.backoffice.domain.review.entity.Review;
 import com.ecommerce.backoffice.domain.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -42,19 +45,27 @@ public class ReviewService {
 
     //리뷰 리스트 조회
     @Transactional
-    public List<GetReviewResponse> getAllReview(Long productId, Long customerId) {
-        Customer customer = customerRepository.findById(customerId).orElseThrow(
-                () -> new IllegalStateException("존재하지 않는 고객입니다.")
-        );
-        Product product = productRepository.findById(productId).orElseThrow(
-                () -> new IllegalStateException("존재하지 않는 상품입니다.")
-        );
+    public GetReviewPageResponse getAllReview(
+            String search, int rating, int page, int size, String sortBy, String sort
+    ) {
+        //정렬 (기본값: 작성일 내림차순)
+        Sort.Direction direction = "asc".equalsIgnoreCase(sort) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sortObj = Sort.by(direction, (sortBy != null) ? sortBy : "createdAt");
 
-        List<Review> reviews = reviewRepository.findByCustomerId(customerId);
-        return reviews
-                .stream()
-                .map((Review review) -> GetReviewResponse.from(review, product, customer))
-                .toList();
+        //페이지 생성
+        Pageable pageable = PageRequest.of(page-1, size, sortObj);
+
+        //필터링된 데이터 조회
+        Page<GetReviewResponse> reviewPage = reviewRepository.findAllReviews(search, rating, pageable);
+
+        //최종 응답
+        return new GetReviewPageResponse(
+                reviewPage.getContent(),
+                reviewPage.getTotalElements(),
+                reviewPage.getTotalPages(),
+                reviewPage.getNumber()+1,
+                reviewPage.getSize()
+        );
     }
 
     //리뷰 상세 조회

@@ -3,15 +3,13 @@ package com.ecommerce.backoffice.domain.review.controller;
 import com.ecommerce.backoffice.domain.review.dto.request.CreateReviewRequest;
 import com.ecommerce.backoffice.domain.review.dto.response.CreateReviewResponse;
 import com.ecommerce.backoffice.domain.review.dto.response.GetDetailReviewResponse;
-import com.ecommerce.backoffice.domain.review.dto.response.GetReviewResponse;
+import com.ecommerce.backoffice.domain.review.dto.response.GetReviewPageResponse;
 import com.ecommerce.backoffice.domain.review.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,15 +26,21 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewService.createReview(productId, request));
     }
 
-    /* 쿼리파리미터
-    *  */
+
     //리뷰 목록 조회
     @GetMapping("/reviews")
-    public ResponseEntity<List<GetReviewResponse>> getAllReviews(
+    public ResponseEntity<GetReviewPageResponse> getAllReviews(
             @RequestAttribute Long productId,
-            @RequestAttribute Long customerId
+            @RequestAttribute Long customerId,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) int rating,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sort
     ){
-        return ResponseEntity.status(HttpStatus.OK).body(reviewService.getAllReview(productId, customerId));
+        GetReviewPageResponse response = reviewService.getAllReview(search, rating, page, size, sortBy, sort);
+        return ResponseEntity.ok(response);
     }
 
     //리뷰 상세 조회
