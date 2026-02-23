@@ -1,25 +1,27 @@
 package com.ecommerce.backoffice.domain.order.service;
 
+import com.ecommerce.backoffice.domain.admin.repository.AdminRepository;
 import com.ecommerce.backoffice.domain.customer.entity.Customer;
 import com.ecommerce.backoffice.domain.customer.repository.CustomerRepository;
 import com.ecommerce.backoffice.domain.order.dto.request.CreateOrderRequest;
-//import com.ecommerce.backoffice.domain.order.dto.request.OrderSearchRequest;
+import com.ecommerce.backoffice.domain.order.dto.request.OrderSearchRequest;
 import com.ecommerce.backoffice.domain.order.dto.response.CreateOrderResponse;
-//import com.ecommerce.backoffice.domain.order.dto.response.GetOrderResponse;
+import com.ecommerce.backoffice.domain.order.dto.response.GetOrderResponse;
+import com.ecommerce.backoffice.domain.order.dto.response.GetOrdersResponse;
 import com.ecommerce.backoffice.domain.order.entity.Order;
 import com.ecommerce.backoffice.domain.order.enums.OrderStatus;
 import com.ecommerce.backoffice.domain.order.repository.OrderRepository;
 import com.ecommerce.backoffice.domain.order.utils.OrderNumberGenerator;
 import com.ecommerce.backoffice.domain.product.entity.Product;
 import com.ecommerce.backoffice.domain.product.repository.ProductRepository;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,13 +30,13 @@ public class OrderService {
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
-    //    private final AdminRepository adminRepository;
+    private final AdminRepository adminRepository;
     private final OrderNumberGenerator orderNumberGenerator;
 
 
     // 주문 생성
     @Transactional
-    public CreateOrderResponse save(HttpSession session, CreateOrderRequest request) {
+    public CreateOrderResponse save(CreateOrderRequest request, HttpServletRequest sessionRequest) {
         // Admin admin = getLoginAdmin(session); <- 아직 구현안됨
 
         // 관리자 조회
@@ -69,21 +71,46 @@ public class OrderService {
 
         return CreateOrderResponse.of(order.getOrderNumber(), order.getCustomer(), order.getProduct());
     }
-/*
+
     // 주문 목록 조회
     @Transactional(readOnly = true)
-    public List<GetOrderResponse> findOrders(HttpSession session, OrderSearchRequest request) {
+    public Page<GetOrdersResponse> findOrders(
+            OrderSearchRequest request,
+            int page,
+            int size
+    ) {
+        Sort.Direction dir = request.direction().equalsIgnoreCase("asc")
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
         // Admin admin = getLoginAdmin(session); <- 아직 구현안됨
 
-        String keyword = request.keyword();
-        int page = request.page() == null ? 1 : request.page();
-        int size = request.size() == null ? 10 : request.size();
+        Pageable pageable = PageRequest.of(
+                page - 1,
+                size,
+                Sort.by(dir, request.sortBy()));
 
-        Pageable pageable = PageRequest.of(page, size);
+        return orderRepository.searchOrders(request, pageable)
+                .map(GetOrdersResponse::of);
+    }
 
-        return orderRepository.findAll()
-                .stream()
-                .map(GetOrderResponse::of)
-                .toList();
-    }*/
+    // 주문 상세 조회
+    @Transactional(readOnly = true)
+    public GetOrderResponse getOne(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                () -> new RuntimeException("존재하지 않는 주문입니다.")
+        );
+        return new GetOrderResponse(
+                order.getOrderNumber(),
+                order.getCustomer().getName(),
+                order.getCustomer().getEmail(),
+                order.getProduct().getName(),
+                order.getQuantity(),
+                order.getTotalPrice(),
+                order.getCreatedAt(),
+                order.getStatus().name(),
+                order.getAdmin().getName(),
+                order.getAdmin().getEmail(),
+                order.getAdmin().getRole().name()
+        );
+    }
 }
