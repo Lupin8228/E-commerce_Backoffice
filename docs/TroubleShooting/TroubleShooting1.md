@@ -159,8 +159,8 @@ spring.sql.init.continue-on-error=true
 
 ###  🎯 결말
 
-실제로 쿼리 성능Hibernate SQL 로그와 EXPLAIN 분석을 통해  
-실제 쿼리 실행 방식을 확인했습니다.
+인덱스 추가 후 Hibernate SQL 로그와 EXPLAIN 분석을 다시 해본 결과 
+type, key 등이 변경된 것을 확인했습니다.
 
 | id | select\_type | table | partitions | type | possible\_keys | key | key\_len | ref | rows | filtered | Extra |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
