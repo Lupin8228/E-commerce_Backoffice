@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -21,18 +23,23 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
 
     // 전체 조회
-    public PageResponse<GetCustomerResponse> getCustomers(Pageable pageable) {
-        Page<GetCustomerResponse> page = customerRepository.findAllByDeletedFalse(pageable)
-                .map(GetCustomerResponse::from);
-        return PageResponse.from(page);
+    public PageResponse<GetCustomerResponse> getCustomers(String search, Pageable pageable) {
+        Page<Customer> page = customerRepository.search(search,pageable);
+
+        List<GetCustomerResponse> content = page.getContent().stream()
+                .map(GetCustomerResponse::from)
+                .toList();
+
+        return PageResponse.of(page,content);
 
 
     }
+
     // 단건 조회
     public GetCustomerResponse getCustomer(Long id) {
 
         Customer customer = customerRepository.findByIdAndDeletedFalse(id).orElseThrow(
-                ()->new CommonException(CommonError.CUSTOMER_NOT_FOUND));
+                ()->new CommonException(CommonError.USER_NOT_FOUND));
         return GetCustomerResponse.from(customer);
     }
 
@@ -40,7 +47,7 @@ public class CustomerService {
     @Transactional
     public GetCustomerResponse updateCustomer(Long id, UpdateCustomerRequest request) {
         Customer customer = customerRepository.findByIdAndDeletedFalse(id).orElseThrow(
-                ()->new CommonException(CommonError.CUSTOMER_NOT_FOUND));
+                ()->new CommonException(CommonError.USER_NOT_FOUND));
         customer.updateCustomer(request.name(), request.email(), request.phone());
         return GetCustomerResponse.from(customer);
     }
@@ -49,8 +56,25 @@ public class CustomerService {
     @Transactional
     public GetCustomerResponse updateStatus(Long id, UpdateStatusRequest request) {
         Customer customer = customerRepository.findByIdAndDeletedFalse(id).orElseThrow(
-                ()->new CommonException(CommonError.CUSTOMER_NOT_FOUND));
+                ()->new CommonException(CommonError.USER_NOT_FOUND));
         customer.updateStatus(request.status());
         return GetCustomerResponse.from(customer);
     }
+
+    @Transactional
+    public void deleteCustomer(Long id) {
+        Customer customer = customerRepository.findByIdAndDeletedFalse(id)
+                .orElseThrow(() -> new CommonException(CommonError.USER_NOT_FOUND));
+
+        customerRepository.delete(customer);
+
+    }
 }
+
+
+
+
+
+
+
+

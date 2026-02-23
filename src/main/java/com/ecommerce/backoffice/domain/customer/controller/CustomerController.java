@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.*;
 public class CustomerController {
     private final CustomerService customerService;
 
-    // TODO: 전체 조회(정렬만 구현, 이름, 이메일로 검색하는 기능은 아직 구현 안함)
     @GetMapping("/api/customers")
     public ResponseEntity<ApiResponse<PageResponse<GetCustomerResponse>>> getCustomers(
+            @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "CREATED_AT") CustomerSortField sortBy, // ENUM 타입(대문자)만 가능
@@ -39,7 +39,7 @@ public class CustomerController {
                 PageRequest.of(page - 1, size, Sort.by(direction, sortBy.getField()));
 
         PageResponse<GetCustomerResponse> response =
-                customerService.getCustomers(pageable);
+                customerService.getCustomers(search,pageable);
 
         return ResponseEntity.ok(ApiResponse.success(response));
     }
@@ -68,5 +68,10 @@ public class CustomerController {
         return ResponseEntity.ok(ApiResponse.success(customerService.updateStatus(id,request)));
     }
 
+    @DeleteMapping("/api/customers/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteCustomer(@PathVariable Long id){
+        customerService.deleteCustomer(id);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
 
 }

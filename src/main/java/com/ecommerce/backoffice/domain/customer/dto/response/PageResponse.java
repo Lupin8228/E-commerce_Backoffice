@@ -1,5 +1,6 @@
 package com.ecommerce.backoffice.domain.customer.dto.response;
 
+import com.ecommerce.backoffice.domain.customer.entity.Customer;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -11,13 +12,14 @@ public record PageResponse<T>(
         long totalElements,
         int totalPages
 ) {
-    public static <T> PageResponse<T> from(Page<T> page) {
+
+    public static PageResponse<GetCustomerResponse> of(Page<Customer> page, List<GetCustomerResponse> content) {
+
         return new PageResponse<>(
-                page.getContent(),
-                page.getNumber(),
+                content,
+                page.getNumber()+1,
                 page.getSize(),
                 page.getTotalElements(),
-                page.getTotalPages()
-        );
+                page.getTotalPages());
     }
 }
