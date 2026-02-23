@@ -12,6 +12,7 @@ import com.ecommerce.backoffice.domain.admin.enums.AdminStatus;
 import com.ecommerce.backoffice.domain.admin.repository.AdminRepository;
 import com.ecommerce.backoffice.global.error.CommonError;
 import com.ecommerce.backoffice.global.error.CommonException;
+import com.ecommerce.backoffice.global.security.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +30,13 @@ public class AdminService {
     private final AdminRepository adminRepository;
     private final TimeProvider timeProvider;
     private final PasswordEncoder passwordEncoder;
+    private final JwtProvider jwtProvider;
 
+    // 회원가입
     @Transactional
     public AdminSignUpResponse signUp(AdminSignUpRequest request) {
         if (adminRepository.existsByEmail(request.email())) {
-            throw new CommonException(CommonError.INVALID_PASSWORD);
+            throw new CommonException(CommonError.DUPLICATE_EMAIL);
         }
 
         String encodePassword = passwordEncoder.encode(request.password());
@@ -43,7 +46,7 @@ public class AdminService {
                         .email(request.email())
                         .password(encodePassword)
                         .phone(request.phone())
-                        .role(AdminRole.CS_ADMIN)
+                        .role(request.role())
                         .status(AdminStatus.PENDING)
                         .build()
         );
@@ -51,9 +54,9 @@ public class AdminService {
         return AdminSignUpResponse.from(newAdmin);
     }
 
-
+    // 로그인
     @Transactional(readOnly = true)
-    public AdminLoginResponse login(AdminLoginRequest request, HttpServletRequest sessionRequest) {
+    public AdminLoginResponse login(AdminLoginRequest request) {
         Admin admin = adminRepository.findByEmail(request.email()).orElseThrow(
                 () -> new CommonException(CommonError.USER_NOT_FOUND)
         );
@@ -71,10 +74,27 @@ public class AdminService {
             }
         }
 
-        HttpSession session = sessionRequest.getSession(true);
-        session.setAttribute("LOGIN_ADMIN", SessionAdmin.from(admin));
+        String token = jwtProvider.createToken(
+                admin.getId(),
+                admin.getEmail(),
+                admin.getRole()
+        );
 
-        return AdminLoginResponse.from(admin);
+//        HttpSession session = sessionRequest.getSession(true);
+//        session.setAttribute("ADMIN_ID", admin.getId());
+//        session.setAttribute("ADMIN_EMAIL", admin.getEmail());
+//        session.setAttribute("ADMIN_ROLE", admin.getRole());
+
+        return AdminLoginResponse.from(admin, token);
+    }
+
+    // 로그아웃
+    public void logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            session.invalidate();
+        }
     }
 
     // 쿼리 파라 미터 조회
