@@ -4,13 +4,18 @@ import com.ecommerce.backoffice.domain.product.entity.Product;
 import com.ecommerce.backoffice.domain.product.enums.ProductCategory;
 import com.ecommerce.backoffice.domain.product.enums.ProductStatus;
 
+import java.time.LocalDateTime;
+
 public record GetAllProductResponse(
         Long id,
         String name,
         ProductCategory category,
         Long price,
-        Integer stock,
-        ProductStatus status
+        int stock,
+        ProductStatus status,
+        LocalDateTime createdAt,
+        String adminName //등록 관리자명
+
 ) {
     public static GetAllProductResponse from(Product product){
         return new GetAllProductResponse(
@@ -19,7 +24,9 @@ public record GetAllProductResponse(
                 product.getCategory(),
                 product.getPrice(),
                 product.getStock(),
-                product.getStatus()
+                product.getStatus(),
+                product.getCreatedAt(),
+                product.getCreatedBy().getName()
         );
     }
 }

@@ -4,17 +4,24 @@ import com.ecommerce.backoffice.domain.admin.entity.Admin;
 import com.ecommerce.backoffice.domain.admin.repository.AdminRepository;
 import com.ecommerce.backoffice.domain.product.dto.request.CreateProductRequest;
 import com.ecommerce.backoffice.domain.product.dto.request.UpdateProductRequest;
-import com.ecommerce.backoffice.domain.product.dto.response.CreateProductResponse;
-import com.ecommerce.backoffice.domain.product.dto.response.GetAllProductResponse;
-import com.ecommerce.backoffice.domain.product.dto.response.GetDetailProductResponse;
-import com.ecommerce.backoffice.domain.product.dto.response.UpdateProductResponse;
+import com.ecommerce.backoffice.domain.product.dto.response.*;
 import com.ecommerce.backoffice.domain.product.entity.Product;
+import com.ecommerce.backoffice.domain.product.enums.ProductCategory;
+import com.ecommerce.backoffice.domain.product.enums.ProductStatus;
 import com.ecommerce.backoffice.domain.product.repository.ProductRepository;
+import com.ecommerce.backoffice.domain.review.entity.Review;
+import com.ecommerce.backoffice.domain.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,42 +29,51 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final AdminRepository adminRepository;
+    private final ReviewRepository reviewRepository;
 
     //상품 생성
     @Transactional
-    public CreateProductResponse saveProduct(Long adminId, CreateProductRequest request) {
-        //현재 상품을 등록하려는 관리자 조회
+    public CreateProductResponse save(Long adminId, CreateProductRequest request) {
+        //현재 상품을 등록하려는 관리자 조회 Long adminId
         Admin admin = adminRepository.findById(adminId).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 관리자입니다.")
+                () -> new IllegalStateException("관리자가 없습니다.")
         );
 
-        //dto를 엔티티로 변환
-        Product product = request.toProduct(admin);
-
-        //db에 저장
-        Product savedProduct = productRepository.save(product);
-
-        //저장된 결과를 응답 dto로 변환해서 반환
-        return new CreateProductResponse(
-                savedProduct.getId(),
-                savedProduct.getName(),
-                savedProduct.getCategory(),
-                savedProduct.getPrice(),
-                savedProduct.getStock(),
-                savedProduct.getStatus(),
-                savedProduct.getCreatedAt()
+        Product savedProduct = productRepository.save(
+                Product.builder()
+                        .name(request.name())
+                        .category(ProductCategory.ELECTRONICS)
+                        .price(request.price())
+                        .stock(request.stock())
+                        .status(ProductStatus.ON_SALE)
+                        .createdBy(admin)
+                        .build()
         );
+        return CreateProductResponse.from(savedProduct);
     }
 
     //상품 리스트 조회
     @Transactional(readOnly = true)
-    public List<GetAllProductResponse> getProduct(){
-        List<Product> products = productRepository.findAll();
+    public GetProductPageResponse getProduct(
+            String productName, ProductCategory category, ProductStatus status,
+            int page, int size, String sortBy, String sort
+    ){
+        //정렬
+        Sort.Direction direction = "desc".equalsIgnoreCase(sort) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sortObj = Sort.by(direction, sortBy);
 
-        return products
-                .stream()
-                .map(GetAllProductResponse::from)
-                .toList();
+        //Pageable 생성
+        Pageable pageable = PageRequest.of(page-1, size, sortObj);
+
+        Page<GetAllProductResponse> productPage = (Page<GetAllProductResponse>) productRepository.findAllProducts(productName, category, status, pageable);
+
+        return new GetProductPageResponse(
+                productPage.getContent(),
+                productPage.getTotalElements(),
+                productPage.getTotalPages(),
+                productPage.getNumber()+1,
+                productPage.getSize()
+        );
     }
 
     //상품 상세 조회
@@ -66,8 +82,6 @@ public class ProductService {
         Product product = productRepository.findById(productId).orElseThrow(
                 () -> new IllegalStateException("없는 상품입니다.")
         );
-
-        //댓글 리스트 조회
 
         return new GetDetailProductResponse(
                 product.getId(),
@@ -100,11 +114,41 @@ public class ProductService {
     @Transactional
     public void deleteProduct(Long productId){
         Product product = productRepository.findById(productId).orElseThrow(
-                () -> new IllegalStateException("없는 상품입니다.")
+                () -> new IllegalStateException("상품이 존재하지 않습니다.")
         );
 
         //삭제할때 댓글도 같이 삭제하게 만들기
 
         productRepository.deleteById(productId);
+    }
+
+    //상품별 리뷰 조회
+    @Transactional(readOnly = true)
+    public ProductReviewResponse getProductReview(Long productId){
+        //리뷰 데이터 조회
+        List<Review> allReview = reviewRepository.findAllByProductId(productId);
+        List<Review> latestReview = reviewRepository.findTop3ByProductIdOrderByCreatedAtDesc(productId);
+
+        //전체 리뷰 개수, 평균 평점 계산
+        long totalReviews = allReview.size();
+        double averageRating = allReview.stream().mapToInt(Review::getRating)
+                .average().orElse(0.0);
+        averageRating = Math.round(averageRating*10)/10.0;
+
+        //별점별 개수 계산
+        Map<Integer, Long> ratingCounts = allReview.stream()
+                .collect(Collectors.groupingBy(Review::getRating, Collectors.counting()));
+
+
+        //최신 리뷰 dto 변환
+        List<LatestReviewResponse> latestDtos = latestReview.stream()
+                .map(LatestReviewResponse::from).toList();
+
+        return new ProductReviewResponse(
+                averageRating,
+                totalReviews,
+                ratingCounts,
+                latestDtos
+        );
     }
 }
