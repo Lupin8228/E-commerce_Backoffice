@@ -4,4 +4,5 @@ public record GetProfileResponse(
         String name,
         String email,
         String phone
-) {}
+) {
+}

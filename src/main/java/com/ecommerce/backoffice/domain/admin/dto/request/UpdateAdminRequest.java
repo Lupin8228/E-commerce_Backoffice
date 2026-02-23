@@ -16,4 +16,5 @@ public record UpdateAdminRequest(
 
         @Pattern(regexp = "^010-\\d{4}-\\d{4}$")
         String phone
-) {}
+) {
+}
