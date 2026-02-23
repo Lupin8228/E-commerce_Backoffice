@@ -4,10 +4,10 @@ import com.ecommerce.backoffice.domain.order.dto.request.CreateOrderRequest;
 import com.ecommerce.backoffice.domain.order.dto.request.OrderSearchRequest;
 import com.ecommerce.backoffice.domain.order.dto.response.CreateOrderResponse;
 import com.ecommerce.backoffice.domain.order.dto.response.GetOrderResponse;
+import com.ecommerce.backoffice.domain.order.dto.response.GetOrdersResponse;
 import com.ecommerce.backoffice.domain.order.service.OrderService;
 import com.ecommerce.backoffice.global.common.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,8 +37,7 @@ public class OrderController {
 
     //주문 목록 조회 GET
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<GetOrderResponse>>> findOrders(
-            HttpServletRequest sessionRequest,
+    public ResponseEntity<ApiResponse<Page<GetOrdersResponse>>> findOrders(
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "1") int page,
@@ -53,9 +52,21 @@ public class OrderController {
                 .direction(direction)
                 .build();
 
-        Page<GetOrderResponse> result = orderService.findOrders(request, page, size);
+        Page<GetOrdersResponse> result = orderService.findOrders(request, page, size);
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(result));
 
+    }
+
+    // 주문 상세 조회 GET
+    @GetMapping("/{orderId}")
+    public ResponseEntity<ApiResponse<GetOrderResponse>> getOne(
+            @PathVariable Long orderId
+    ) {
+        GetOrderResponse response = orderService.getOne(orderId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(response));
     }
 }
