@@ -1,8 +1,6 @@
 package com.ecommerce.backoffice.domain.admin.entity;
 
 
-
-import com.ecommerce.backoffice.domain.admin.dto.request.UpdateAdminRequest;
 import com.ecommerce.backoffice.domain.admin.enums.AdminRole;
 import com.ecommerce.backoffice.domain.admin.enums.AdminStatus;
 import com.ecommerce.backoffice.global.common.BaseEntity;
@@ -12,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
@@ -19,8 +18,12 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "admins")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE admins SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
+@SQLDelete(sql = "UPDATE admins SET deleted_at = NOW() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 public class Admin extends BaseEntity {
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,10 +58,9 @@ public class Admin extends BaseEntity {
     @Column(length = 200)
     private String rejectedReason;
 
-    @Builder
-    private Admin(String name, String email, String password,
-                  String phone, AdminRole role, AdminStatus status) {
 
+    @Builder
+    private Admin(String name, String email, String password, String phone, AdminRole role, AdminStatus status) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -67,7 +69,7 @@ public class Admin extends BaseEntity {
         this.status = status;
     }
 
-    public void updateInfo(String newName, String newEmail, String newPhone) {
+    public void updateInfo(String name, String email, String phone) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -93,4 +95,35 @@ public class Admin extends BaseEntity {
     public void changePasswordHash(String newPasswordHash) {
         this.password = newPasswordHash;
     }
+
+
+    public void adminStatus(AdminStatus status) {
+
+        if (status == AdminStatus.PENDING) {
+            this.status = AdminStatus.PENDING;
+            this.approvedAt = null;
+            this.rejectedAt = null;
+            this.rejectedReason = null;
+            return;
+        }
+
+        if (status == AdminStatus.SUSPENDED) {
+            this.status = AdminStatus.SUSPENDED;
+            this.approvedAt = null;
+            this.rejectedAt = null;
+            this.rejectedReason = null;
+            return;
+        }
+
+        if (status == AdminStatus.INACTIVATE) {
+            this.status = AdminStatus.INACTIVATE;
+            this.approvedAt = null;
+            this.rejectedAt = null;
+            this.rejectedReason = null;
+            return;
+        }
+
+        this.status = status;
+    }
+
 }
