@@ -4,4 +4,5 @@ public record UpdateProfileResponse(
         String name,
         String email,
         String phone
-) {}
+) {
+}

@@ -5,20 +5,18 @@ import com.ecommerce.backoffice.domain.admin.enums.AdminStatus;
 
 import java.time.LocalDateTime;
 
-public record DecisionAdminResponse(
+public record PatchAdminStatusChangeResponse(
         Long id,
         AdminStatus status,
         LocalDateTime approvedAt,
-        LocalDateTime rejectedAt,
-        String rejectedReason
+        LocalDateTime rejectedAt
 ) {
-    public static DecisionAdminResponse from(Admin admin) {
-        return new DecisionAdminResponse(
+    public static PatchAdminStatusChangeResponse from(Admin admin) {
+        return new PatchAdminStatusChangeResponse(
                 admin.getId(),
                 admin.getStatus(),
                 admin.getApprovedAt(),
-                admin.getRejectedAt(),
-                admin.getRejectedReason()
+                admin.getRejectedAt()
         );
     }
 }

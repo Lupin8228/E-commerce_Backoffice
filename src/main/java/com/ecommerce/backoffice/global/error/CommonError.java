@@ -53,12 +53,16 @@ public enum CommonError {
     ADMIN_NOT_PENDING(BAD_REQUEST, "A401", "승인대기 상태에서만 처리할 수 있습니다."),
     CURRENT_PASSWORD_MISMATCH(BAD_REQUEST, "A501", "현재 비밀번호가 일치하지 않습니다."),
 
-    // 30xx: 주문 관련
-    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "O3001", "주문건을 찾을 수 없습니다."),
-    ORDER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "O3002", "해당 주문에 접근할 권한이 없습니다."),
-    INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "O3003", "잘못된 주문 양식입니다."),
-    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "O3004", "상품을 찾을 수 없습니다."),
-    PRODUCT_OUT_OF_STOCK(HttpStatus.BAD_REQUEST, "O3005", "해당 상품의 재고가 없습니다.");
+    // -- 4000: ORDER --
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "O4001", "존재하지 않는 주문입니다."),
+    ORDER_ALREADY_DELIVERED(BAD_REQUEST, "O4002", "배송완료된 주문은 상태를 변경할 수 없습니다."),
+    ORDER_ALREADY_CANCELLED(BAD_REQUEST, "O4003", "취소된 주문은 상태를 변경할 수 없습니다."),
+    ORDER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "O4004", "해당 주문에 접근할 권한이 없습니다."),
+    INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "O4005", "잘못된 주문 양식입니다."),
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "O4006", "상품을 찾을 수 없습니다."),
+    PRODUCT_OUT_OF_STOCK(HttpStatus.BAD_REQUEST, "O4007", "해당 상품의 재고가 없습니다."),
+    ORDER_NOT_PREPARING(BAD_REQUEST, "O4008", "준비중 상태에서만 취소할 수 있습니다.");
+
 
 
     private final HttpStatus status;
