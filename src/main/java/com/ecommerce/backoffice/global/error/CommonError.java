@@ -57,7 +57,7 @@ public enum CommonError {
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "O4001", "존재하지 않는 주문입니다."),
     ORDER_ALREADY_DELIVERED(BAD_REQUEST, "O4002", "배송완료된 주문은 상태를 변경할 수 없습니다."),
     ORDER_ALREADY_CANCELLED(BAD_REQUEST, "O4003", "취소된 주문은 상태를 변경할 수 없습니다."),
-    ORDER_NOT_PREPARING(BAD_REQUEST, "O4004", "준비중 상태에서만 처리할 수 있습니다.");
+    ORDER_NOT_PREPARING(BAD_REQUEST, "O4004", "준비중 상태에서만 취소할 수 있습니다.");
 
 
     private final HttpStatus status;
