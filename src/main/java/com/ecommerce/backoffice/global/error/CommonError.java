@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-import static org.springframework.http.HttpStatus.*;
-
 /**
  * [HTTP Status Code 기반 에러 정의 가이드]
  * * 400 (Bad Request): "데이터 형식 오류"
@@ -36,11 +34,15 @@ public enum CommonError {
     INACTIVE_ACCOUNT(HttpStatus.FORBIDDEN, "A2005", "비활성화된 계정입니다."),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "A2006", "이미 존재하는 이메일입니다."),
     ADMIN_NOT_FOUND(HttpStatus.NOT_FOUND, "A2007", "존재하지 않는 관리자입니다."),
-    ADMIN_NOT_LOGGED_IN(UNAUTHORIZED, "A2008", "로그인이 필요합니다."),
-    FORBIDDEN_SUPER_ADMIN_ONLY(FORBIDDEN, "A2009", "슈퍼 관리자만 접근할 수 있습니다."),
-    INVALID_UPDATE_REQUEST(BAD_REQUEST, "A2010", "수정할 값이 없습니다."),
-    ADMIN_NOT_PENDING(BAD_REQUEST, "A2011", "승인대기 상태에서만 처리할 수 있습니다."),
-    CURRENT_PASSWORD_MISMATCH(BAD_REQUEST, "A2012", "현재 비밀번호가 일치하지 않습니다.");
+    ADMIN_NOT_LOGGED_IN(HttpStatus.UNAUTHORIZED, "A2008", "로그인이 필요합니다."),
+    FORBIDDEN_SUPER_ADMIN_ONLY(HttpStatus.FORBIDDEN, "A2009", "슈퍼 관리자만 접근할 수 있습니다."),
+    INVALID_UPDATE_REQUEST(HttpStatus.BAD_REQUEST, "A2010", "수정할 값이 없습니다."),
+    ADMIN_NOT_PENDING(HttpStatus.BAD_REQUEST, "A2011", "승인대기 상태에서만 처리할 수 있습니다."),
+    CURRENT_PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "A2012", "현재 비밀번호가 일치하지 않습니다."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A2014", "유효하지 않은 토큰입니다."),
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "A2015", "만료된 토큰입니다."),
+    UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "A2016", "지원되지 않는 토큰 형식입니다."),
+    EMPTY_TOKEN(HttpStatus.UNAUTHORIZED, "A2017", "토큰이 존재하지 않습니다.");
 
     private final HttpStatus status;
     private final String code;
