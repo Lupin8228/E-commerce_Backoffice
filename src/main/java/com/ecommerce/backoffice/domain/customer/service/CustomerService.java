@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,21 +24,18 @@ public class CustomerService {
 
     // 전체 조회
     public PageResponse<GetCustomerResponse> getCustomers(String search, Pageable pageable) {
-        Page<Customer> page = customerRepository.search(search,pageable);
+        Page<GetCustomerResponse> page = customerRepository.searchWithOrderStats(search,pageable);
 
-        List<GetCustomerResponse> content = page.getContent().stream()
-                .map(GetCustomerResponse::from)
-                .toList();
-
-        return PageResponse.of(page,content);
+        return PageResponse.from(page);
     }
 
     // 단건 조회
     public GetCustomerResponse getCustomer(Long id) {
-
-        Customer customer = customerRepository.findByIdAndDeletedFalse(id).orElseThrow(
-                ()->new CommonException(CommonError.CUSTOMER_NOT_FOUND));
-        return GetCustomerResponse.from(customer);
+        boolean existence = customerRepository.existsById(id);
+        if(!existence){
+            throw new CommonException(CommonError.CUSTOMER_NOT_FOUND);
+        }
+        return customerRepository.findByIdWithOrderStats(id);
     }
 
     // 정보 업데이트(이름,이메일,전화번호)
@@ -62,7 +58,7 @@ public class CustomerService {
             }
         }
         customer.updateCustomer(request.name(), request.email(), request.phone());
-        return GetCustomerResponse.from(customer);
+        return customerRepository.findByIdWithOrderStats(id);
     }
 
     // 상태 업데이트
@@ -74,7 +70,7 @@ public class CustomerService {
                 ()->new CommonException(CommonError.CUSTOMER_NOT_FOUND));
         // 만약 기존 상태와 같은 상태로 업데이트 요청이 들어오면 쿼리문은 날리지 않는것이..?
         customer.updateStatus(status);
-        return GetCustomerResponse.from(customer);
+        return customerRepository.findByIdWithOrderStats(id);
     }
 
     @Transactional

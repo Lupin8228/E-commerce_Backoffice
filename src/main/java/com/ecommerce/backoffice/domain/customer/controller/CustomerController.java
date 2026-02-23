@@ -56,6 +56,7 @@ public class CustomerController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateCustomerRequest request
     ) {
+
         return ResponseEntity.ok(ApiResponse.success(customerService.updateCustomer(id,request)));
     }
 

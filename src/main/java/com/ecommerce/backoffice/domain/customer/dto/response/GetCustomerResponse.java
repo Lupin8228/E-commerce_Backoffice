@@ -11,10 +11,9 @@ public record GetCustomerResponse(
         String email,
         String phone,
         CustomerStatus status,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        Long totalOrderCount,
+        Long totalOrderAmount
 ) {
-    public static GetCustomerResponse from(Customer customer) {
-        return new GetCustomerResponse(customer.getId(),customer.getName(),customer.getEmail(),customer.getPhone(),
-                customer.getStatus(),customer.getCreatedAt());
-    }
+
 }
