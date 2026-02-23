@@ -13,10 +13,10 @@ public record PageResponse<T>(
         int totalPages
 ) {
 
-    public static PageResponse<GetCustomerResponse> of(Page<Customer> page, List<GetCustomerResponse> content) {
+    public static PageResponse<GetCustomerResponse> from(Page<GetCustomerResponse> page) {
 
         return new PageResponse<>(
-                content,
+                page.getContent(),
                 page.getNumber()+1,
                 page.getSize(),
                 page.getTotalElements(),

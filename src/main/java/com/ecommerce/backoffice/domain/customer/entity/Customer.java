@@ -52,13 +52,13 @@ public class Customer extends BaseEntity {
     }
 
     public void updateCustomer(String name, String email, String phone){
-        if(name!=null){
+        if(name != null && !name.isBlank()){
             this.name = name;
         }
-        if(email!=null){
+        if(email != null && !email.isBlank()){
             this.email = email;
         }
-        if(phone!=null){
+        if(phone != null && !phone.isBlank()){
             this.phone = phone;
         }
     }
