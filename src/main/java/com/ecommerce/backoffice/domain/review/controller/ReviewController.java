@@ -63,5 +63,4 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    //상품별 리뷰 조회
 }

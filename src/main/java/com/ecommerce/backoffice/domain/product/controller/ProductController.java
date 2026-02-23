@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,10 +22,10 @@ public class ProductController {
     //상품 생성
     @PostMapping("/products")
     public ResponseEntity<CreateProductResponse> saveProduct(
-            @RequestAttribute Long adminId,
+            //@RequestAttribute Long adminId,
             @Valid @RequestBody CreateProductRequest request
     ){
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(adminId, request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(1L, request));
     }
 
     //상품 리스트 조회
@@ -45,7 +44,7 @@ public class ProductController {
     }
 
     //상품 상세 조회
-    @GetMapping("/products/{id}")
+    @GetMapping("/products/{productId}")
     public ResponseEntity<GetDetailProductResponse> getDetailProduct(
             @PathVariable Long productId
     ){
@@ -53,7 +52,7 @@ public class ProductController {
     }
 
     //상품 업데이트
-    @PatchMapping("/products/{id}")
+    @PatchMapping("/products/{productId}")
     public ResponseEntity<UpdateProductResponse> updateProduct(
             @PathVariable Long productId,
             @Valid @RequestBody UpdateProductRequest request
@@ -62,11 +61,19 @@ public class ProductController {
     }
 
     //상품 삭제
-    @DeleteMapping("/products/{id}")
+    @DeleteMapping("/products/{productId}")
     public ResponseEntity<Void> deleteProduct(
             @PathVariable Long productId
     ) {
         productService.deleteProduct(productId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    //상품별 리뷰 조회
+    @GetMapping("/products/{productId}/reviews")
+    public ResponseEntity<ProductReviewResponse> getProductReviews(
+            @PathVariable Long productId
+    ){
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getProductReview(productId));
     }
 }

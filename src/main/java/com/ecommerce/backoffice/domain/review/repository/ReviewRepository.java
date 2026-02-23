@@ -30,4 +30,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             @Param("rating") int rating,
             Pageable pageable
     );
+
+    //리뷰 통계 계산용. 특정 상품의 모든 리뷰 조회
+    List<Review> findAllByProductId(Long productId);
+
+    //최신 리뷰 3개만 조회
+    List<Review> findTop3ByProductIdOrderByCreatedAtDesc(Long productId);
 }
