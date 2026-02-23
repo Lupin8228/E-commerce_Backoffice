@@ -25,10 +25,9 @@ public class OrderController {
     // 주문 POST
     @PostMapping
     public ResponseEntity<ApiResponse<CreateOrderResponse>> saveOrder(
-            @Valid @RequestBody CreateOrderRequest request,
-            HttpServletRequest sessionRequest
+            @Valid @RequestBody CreateOrderRequest request
     ) {
-        CreateOrderResponse response = orderService.save(request, sessionRequest);
+        CreateOrderResponse response = orderService.save(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
