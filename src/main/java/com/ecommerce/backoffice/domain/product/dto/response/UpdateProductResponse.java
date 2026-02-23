@@ -11,7 +11,7 @@ public record UpdateProductResponse(
         String name,
         ProductCategory category,
         Long price,
-        Integer stock,
+        int stock,
         ProductStatus status,
         LocalDateTime createdAt
 ) {
