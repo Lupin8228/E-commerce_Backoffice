@@ -53,6 +53,10 @@ public enum CommonError {
     ADMIN_NOT_PENDING(BAD_REQUEST, "A401", "승인대기 상태에서만 처리할 수 있습니다."),
     CURRENT_PASSWORD_MISMATCH(BAD_REQUEST, "A501", "현재 비밀번호가 일치하지 않습니다."),
 
+    // -- 3000: Customer --
+    CUSTOMER_NOT_FOUND(BAD_REQUEST,"C3001","존재하지 않는 유저입니다."),
+    INVALID_CUSTOMER_UPDATE(BAD_REQUEST,"C3002","유효하지 않은 유저 정보 또는 상태 변경 요청입니다."),
+
     // -- 4000: ORDER --
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "O4001", "존재하지 않는 주문입니다."),
     ORDER_ALREADY_DELIVERED(BAD_REQUEST, "O4002", "배송완료된 주문은 상태를 변경할 수 없습니다."),

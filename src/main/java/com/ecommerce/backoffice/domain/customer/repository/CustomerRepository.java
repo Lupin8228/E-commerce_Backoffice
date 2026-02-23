@@ -17,6 +17,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     Optional<Customer> findByIdAndDeletedFalse(Long id);
 //    Page<Customer> findAllByDeletedFalse(Pageable pageable);
     Page<Customer> search(String keyword, Pageable pageable);
+    boolean existsByEmailAndIdNot(String email, Long id);
 
     Long countByDeletedFalse();
     Long countByStatusAndDeletedFalse(CustomerStatus customerStatus);
