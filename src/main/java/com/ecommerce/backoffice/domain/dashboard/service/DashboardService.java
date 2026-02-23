@@ -170,6 +170,6 @@ public class DashboardService {
      */
     private List<RecentOrderResponse> getRecentOrders() {
 
-        return orderRepository.findRecentOrders(PageRequest.of(0, 10));
+        return orderRepository.findRecentOrders();
     }
 }

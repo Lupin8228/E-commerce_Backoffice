@@ -67,6 +67,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>, OrderReposi
         JOIN o.product p
         WHERE o.deleted = false
         ORDER BY o.createdAt DESC
+        LIMIT 10
         """)
-    List<RecentOrderResponse> findRecentOrders(Pageable pageable);
+    List<RecentOrderResponse> findRecentOrders();
 }
