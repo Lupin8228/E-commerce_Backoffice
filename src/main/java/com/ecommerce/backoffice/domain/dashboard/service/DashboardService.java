@@ -1,5 +1,6 @@
 package com.ecommerce.backoffice.domain.dashboard.service;
 
+import com.ecommerce.backoffice.domain.admin.entity.Admin;
 import com.ecommerce.backoffice.domain.admin.enums.AdminStatus;
 import com.ecommerce.backoffice.domain.admin.repository.AdminRepository;
 import com.ecommerce.backoffice.domain.customer.enums.CustomerStatus;
@@ -18,6 +19,8 @@ import com.ecommerce.backoffice.domain.order.enums.OrderStatus;
 import com.ecommerce.backoffice.domain.order.repository.OrderRepository;
 import com.ecommerce.backoffice.domain.product.repository.ProductRepository;
 import com.ecommerce.backoffice.domain.review.repository.ReviewRepository;
+import com.ecommerce.backoffice.global.error.CommonError;
+import com.ecommerce.backoffice.global.error.CommonException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -46,7 +49,16 @@ public class DashboardService {
     /**
      * 대시보드 전체 조회
      */
-    public DashboardResponse getDashboard() {
+    public DashboardResponse getDashboard(String email) {
+        Admin admin = adminRepository.findByEmail(email).orElseThrow(
+                () -> new CommonException(CommonError.USER_NOT_FOUND)
+        );
+
+        // 권한 체크
+        /*if (!admin.canUpdateOrderStatus(request.status())) {
+            throw new CommonException(CommonError.ADMIN_NO_PERMISSION);
+        }*/
+
         // Summary 통계
         DashboardSummaryResponse summary = getSummary();
         // Widgets 데이터
