@@ -1,5 +1,6 @@
 package com.ecommerce.backoffice.domain.order.service;
 
+import com.ecommerce.backoffice.domain.admin.entity.Admin;
 import com.ecommerce.backoffice.domain.admin.repository.AdminRepository;
 import com.ecommerce.backoffice.domain.customer.entity.Customer;
 import com.ecommerce.backoffice.domain.customer.repository.CustomerRepository;
@@ -14,12 +15,14 @@ import com.ecommerce.backoffice.domain.order.repository.OrderRepository;
 import com.ecommerce.backoffice.domain.order.utils.OrderNumberGenerator;
 import com.ecommerce.backoffice.domain.product.entity.Product;
 import com.ecommerce.backoffice.domain.product.repository.ProductRepository;
-import jakarta.servlet.http.HttpServletRequest;
+import com.ecommerce.backoffice.global.error.CommonError;
+import com.ecommerce.backoffice.global.error.CommonException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,30 +36,32 @@ public class OrderService {
     private final AdminRepository adminRepository;
     private final OrderNumberGenerator orderNumberGenerator;
 
+    private Admin getLoginAdmin() {
+        return (Admin) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+    }
 
     // 주문 생성
     @Transactional
-    public CreateOrderResponse save(CreateOrderRequest request, HttpServletRequest sessionRequest) {
-        // Admin admin = getLoginAdmin(session); <- 아직 구현안됨
+    public CreateOrderResponse save(CreateOrderRequest request) {
 
-        // 관리자 조회
-//        Admin admin = (Long) session.getAttribute("LOGIN_ADMIN");
-//        if(admin == null) {
-//            throw new RuntimeException("관리자 계정에 로그인하시기 바랍니다.");
-//        }
+        Admin admin = getLoginAdmin();
 
         // 사용자 조회
         Customer customer = customerRepository.findById(request.customerId())
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CommonException(CommonError.USER_NOT_FOUND));
 
         // 상품 조회
         Product product = productRepository.findById(request.productId())
-                .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CommonException(CommonError.PRODUCT_NOT_FOUND));
 
         // 상품 재고 확인
         if (product.getStock() < request.quantity()) {
-            throw new RuntimeException("재고가 부족합니다.");
+            throw new CommonException(CommonError.PRODUCT_OUT_OF_STOCK);
         }
+
+        // 재고 차감
         // product.decreeaseStock(request.quantity()); <- 아직 구현안됨
 
         Order order = Order.builder()
@@ -66,10 +71,16 @@ public class OrderService {
                 .quantity(request.quantity())
                 .customer(customer)
                 .product(product)
-                // .admin(admin) <- 아직 구현안됨
+                .admin(admin)
                 .build();
 
-        return CreateOrderResponse.of(order.getOrderNumber(), order.getCustomer(), order.getProduct());
+        Order saved = orderRepository.save(order);
+
+        return CreateOrderResponse.of(
+                saved.getOrderNumber(),
+                saved.getCustomer(),
+                saved.getProduct()
+        );
     }
 
     // 주문 목록 조회
@@ -82,7 +93,6 @@ public class OrderService {
         Sort.Direction dir = request.direction().equalsIgnoreCase("asc")
                 ? Sort.Direction.ASC
                 : Sort.Direction.DESC;
-        // Admin admin = getLoginAdmin(session); <- 아직 구현안됨
 
         Pageable pageable = PageRequest.of(
                 page - 1,
@@ -97,7 +107,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public GetOrderResponse getOne(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(
-                () -> new RuntimeException("존재하지 않는 주문입니다.")
+                () -> new CommonException(CommonError.ORDER_NOT_FOUND)
         );
         return new GetOrderResponse(
                 order.getOrderNumber(),
