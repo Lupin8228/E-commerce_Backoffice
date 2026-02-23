@@ -1,5 +1,7 @@
 package com.ecommerce.backoffice.domain.order.service;
 
+import com.ecommerce.backoffice.domain.admin.entity.Admin;
+import com.ecommerce.backoffice.domain.admin.repository.AdminRepository;
 import com.ecommerce.backoffice.domain.order.dto.request.CancelOrderRequest;
 import com.ecommerce.backoffice.domain.order.dto.request.UpdateStatusOrderRequest;
 import com.ecommerce.backoffice.domain.order.dto.response.CancelOrderResponse;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderStatusService {
 
     private final OrderRepository orderRepository;
+    private final AdminRepository adminRepository;
 
     /**
      * 주문 상태 변경
@@ -28,7 +31,16 @@ public class OrderStatusService {
      * @return
      */
     @Transactional
-    public UpdateStatusOrderResponse updateStatusOrder(Long id, UpdateStatusOrderRequest request) {
+    public UpdateStatusOrderResponse updateStatusOrder(String email, Long id, UpdateStatusOrderRequest request) {
+        Admin admin = adminRepository.findByEmail(email).orElseThrow(
+                () -> new CommonException(CommonError.USER_NOT_FOUND)
+        );
+
+        // 권한 체크
+        /*if (!admin.canUpdateOrderStatus(request.status())) {
+            throw new CommonException(CommonError.ADMIN_NO_PERMISSION);
+        }*/
+
         // 주문 데이터 있는지 확인
         Order order = orderRepository.findById(id).orElseThrow(
                 () -> new CommonException(CommonError.ORDER_NOT_FOUND)
@@ -54,7 +66,16 @@ public class OrderStatusService {
      * @return
      */
     @Transactional
-    public CancelOrderResponse cancelOrder(Long id, CancelOrderRequest request) {
+    public CancelOrderResponse cancelOrder(String email, Long id, CancelOrderRequest request) {
+        Admin admin = adminRepository.findByEmail(email).orElseThrow(
+                () -> new CommonException(CommonError.USER_NOT_FOUND)
+        );
+
+        // 권한 체크
+        /*if (!admin.canUpdateOrderStatus(request.status())) {
+            throw new CommonException(CommonError.ADMIN_NO_PERMISSION);
+        }*/
+
         // 주문 데이터 있는지 확인
         Order order = orderRepository.findById(id).orElseThrow(
                 () -> new CommonException(CommonError.ORDER_NOT_FOUND)
