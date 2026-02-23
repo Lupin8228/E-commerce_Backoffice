@@ -6,6 +6,7 @@ import com.ecommerce.backoffice.domain.order.dto.response.CancelOrderResponse;
 import com.ecommerce.backoffice.domain.order.dto.response.UpdateStatusOrderResponse;
 import com.ecommerce.backoffice.domain.order.service.OrderStatusService;
 import com.ecommerce.backoffice.global.common.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class OrderStatusController {
     @PatchMapping("/orders/{id}/status")
     public ResponseEntity<ApiResponse<UpdateStatusOrderResponse>> updateStutusOrder(
             @PathVariable Long id,
-            @RequestBody UpdateStatusOrderRequest request) {
+            @Valid @RequestBody UpdateStatusOrderRequest request) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 ApiResponse.success(orderStatusService.updateStatusOrder(id, request)));
     }
@@ -35,7 +36,7 @@ public class OrderStatusController {
     @PatchMapping("/orders/{id}/cancel")
     public ResponseEntity<ApiResponse<CancelOrderResponse>> cancelOrder(
             @PathVariable Long id,
-            @RequestBody CancelOrderRequest request
+            @Valid @RequestBody CancelOrderRequest request
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 ApiResponse.success(orderStatusService.cancelOrder(id, request)));
