@@ -60,6 +60,7 @@ public enum CommonError {
     ORDER_NOT_PREPARING(BAD_REQUEST, "O4004", "준비중 상태에서만 취소할 수 있습니다.");
 
 
+
     private final HttpStatus status;
     private final String code;
     private final String message;
