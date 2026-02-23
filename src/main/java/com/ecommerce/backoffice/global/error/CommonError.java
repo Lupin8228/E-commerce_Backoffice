@@ -25,33 +25,22 @@ import static org.springframework.http.HttpStatus.*;
 @RequiredArgsConstructor
 public enum CommonError {
 
+    // -- 1000:  --
+
     // -- 2000: ADMIN --
-    // 21xx: 인증 관련
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "A2101", "존재하지 않는 계정입니다."),
-    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "A2102", "비밀번호가 일치하지 않습니다."),
-    LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "A2103", "로그인에 실패했습니다."),
-
-    // 22xx: 계정 상태
-    PENDING_ACCOUNT(HttpStatus.FORBIDDEN, "A2201", "승인 대기 중인 계정입니다."),
-    SUSPENDED_ACCOUNT(HttpStatus.FORBIDDEN, "A2202", "활동이 정지된 계정입니다."),
-    INACTIVE_ACCOUNT(HttpStatus.FORBIDDEN, "A2203", "비활성화된 계정입니다."),
-
-    // 23xx: 중복
-    DUPLICATE_EMAIL(HttpStatus.CONFLICT, "A2301", "이미 존재하는 이메일입니다."),
-    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "USER_001", "조회할 유저가 없습니다."),
-    NOT_UPDATE_USER(HttpStatus.NOT_FOUND, "USER_002", "수정할 유저가 없습니다."),
-    NOT_DELETE_USER(HttpStatus.NOT_FOUND, "USER_003", "삭제할 유저가 없습니다."),
-//    INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "AUTH_001", "비밀번호가 틀렸습니다."),
-    UNAUTHORIZED_ACCESS(HttpStatus.FORBIDDEN, "AUTH_002", "접근 권한이 없습니다."),
-//    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "A001", "이미 사용 중인 이메일입니다."),
-
-    ADMIN_NOT_FOUND(HttpStatus.NOT_FOUND, "A002", "존재하지 않는 관리자입니다."),
-
-    ADMIN_NOT_LOGGED_IN(UNAUTHORIZED, "A106", "로그인이 필요합니다."),
-    FORBIDDEN_SUPER_ADMIN_ONLY(FORBIDDEN, "A201", "슈퍼 관리자만 접근할 수 있습니다."),
-    INVALID_UPDATE_REQUEST(BAD_REQUEST, "A302", "수정할 값이 없습니다."),
-    ADMIN_NOT_PENDING(BAD_REQUEST, "A401", "승인대기 상태에서만 처리할 수 있습니다."),
-    CURRENT_PASSWORD_MISMATCH(BAD_REQUEST, "A501", "현재 비밀번호가 일치하지 않습니다.");
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "A2000", "존재하지 않는 계정입니다."),
+    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "A2001", "비밀번호가 일치하지 않습니다."),
+    LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "A2002", "로그인에 실패했습니다."),
+    PENDING_ACCOUNT(HttpStatus.FORBIDDEN, "A2003", "승인 대기 중인 계정입니다."),
+    SUSPENDED_ACCOUNT(HttpStatus.FORBIDDEN, "A2004", "활동이 정지된 계정입니다."),
+    INACTIVE_ACCOUNT(HttpStatus.FORBIDDEN, "A2005", "비활성화된 계정입니다."),
+    DUPLICATE_EMAIL(HttpStatus.CONFLICT, "A2006", "이미 존재하는 이메일입니다."),
+    ADMIN_NOT_FOUND(HttpStatus.NOT_FOUND, "A2007", "존재하지 않는 관리자입니다."),
+    ADMIN_NOT_LOGGED_IN(UNAUTHORIZED, "A2008", "로그인이 필요합니다."),
+    FORBIDDEN_SUPER_ADMIN_ONLY(FORBIDDEN, "A2009", "슈퍼 관리자만 접근할 수 있습니다."),
+    INVALID_UPDATE_REQUEST(BAD_REQUEST, "A2010", "수정할 값이 없습니다."),
+    ADMIN_NOT_PENDING(BAD_REQUEST, "A2011", "승인대기 상태에서만 처리할 수 있습니다."),
+    CURRENT_PASSWORD_MISMATCH(BAD_REQUEST, "A2012", "현재 비밀번호가 일치하지 않습니다.");
 
     private final HttpStatus status;
     private final String code;

@@ -24,10 +24,11 @@ public class AdminService {
     private final TimeProvider timeProvider;
     private final PasswordEncoder passwordEncoder;
 
+    // 회원가입
     @Transactional
     public AdminSignUpResponse signUp(AdminSignUpRequest request) {
         if (adminRepository.existsByEmail(request.email())) {
-            throw new CommonException(CommonError.INVALID_PASSWORD);
+            throw new CommonException(CommonError.DUPLICATE_EMAIL);
         }
 
         String encodePassword = passwordEncoder.encode(request.password());
@@ -37,7 +38,7 @@ public class AdminService {
                         .email(request.email())
                         .password(encodePassword)
                         .phone(request.phone())
-                        .role(AdminRole.CS_ADMIN)
+                        .role(request.role())
                         .status(AdminStatus.PENDING)
                         .build()
         );
@@ -45,7 +46,7 @@ public class AdminService {
         return AdminSignUpResponse.from(newAdmin);
     }
 
-
+    // 로그인
     @Transactional(readOnly = true)
     public AdminLoginResponse login(AdminLoginRequest request, HttpServletRequest sessionRequest) {
         Admin admin = adminRepository.findByEmail(request.email()).orElseThrow(
@@ -67,8 +68,19 @@ public class AdminService {
 
         HttpSession session = sessionRequest.getSession(true);
         session.setAttribute("ADMIN_ID", admin.getId());
+        session.setAttribute("ADMIN_EMAIL", admin.getEmail());
+        session.setAttribute("ADMIN_ROLE", admin.getRole());
 
         return AdminLoginResponse.from(admin);
+    }
+
+    // 로그아웃
+    public void logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            session.invalidate();
+        }
     }
 
     // 관리자 상세 조회

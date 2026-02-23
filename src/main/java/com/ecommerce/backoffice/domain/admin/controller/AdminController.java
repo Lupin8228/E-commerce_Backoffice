@@ -8,6 +8,7 @@ import com.ecommerce.backoffice.domain.admin.dto.session.SessionAdminContext;
 import com.ecommerce.backoffice.domain.admin.service.AdminService;
 import com.ecommerce.backoffice.global.common.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ public class AdminController {
     private final AdminService adminService;
     private final SessionAdminContext sessionAdminContext;
 
+    // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<AdminSignUpResponse>> signUp(
             @Valid @RequestBody AdminSignUpRequest request
@@ -32,6 +34,7 @@ public class AdminController {
                 );
     }
 
+    // 로그인
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AdminLoginResponse>> login(
             @Valid @RequestBody AdminLoginRequest request,
@@ -42,6 +45,16 @@ public class AdminController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success(response));
+    }
+
+    // 로그아웃
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request) {
+        adminService.logout(request);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(null));
     }
 //    // 관리자 리스트 조회(검색/페이징/정렬/역할/상태)
 //    @GetMapping
