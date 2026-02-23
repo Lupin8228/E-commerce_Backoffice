@@ -22,6 +22,7 @@ public class AdminController {
 
     private final AdminService adminService;
 
+    // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<AdminSignUpResponse>> signUp(
             @Valid @RequestBody AdminSignUpRequest request
@@ -32,17 +33,28 @@ public class AdminController {
                 );
     }
 
+    // 로그인
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AdminLoginResponse>> login(
-            @Valid @RequestBody AdminLoginRequest request,
-            HttpServletRequest sessionRequest
+            @Valid @RequestBody AdminLoginRequest request
     ) {
-        AdminLoginResponse response = adminService.login(request, sessionRequest);
+        AdminLoginResponse response = adminService.login(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success(response));
     }
+
+    // 로그아웃
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request) {
+        adminService.logout(request);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(null));
+    }
+
 
     // 관리자 리스트 조회
     @GetMapping("/admins")
