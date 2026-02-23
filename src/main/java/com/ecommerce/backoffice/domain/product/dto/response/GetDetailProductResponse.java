@@ -11,7 +11,7 @@ public record GetDetailProductResponse(
         String name,
         ProductCategory category,
         Long price,
-        Integer stock,
+        int stock,
         ProductStatus status,
         LocalDateTime createdAt
         //등록 관리자 이메일

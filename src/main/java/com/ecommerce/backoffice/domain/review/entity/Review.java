@@ -6,6 +6,7 @@ import com.ecommerce.backoffice.domain.product.entity.Product;
 import com.ecommerce.backoffice.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +21,7 @@ public class Review extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private Integer rating;
+    private int rating;
 
     @Column(nullable = false)
     private String description;
@@ -37,6 +38,7 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
+    @Builder
     public Review(Customer customer, Product product, Order order, Integer rating, String description) {
         this.customer = customer;
         this.product = product;
