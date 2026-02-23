@@ -6,6 +6,7 @@ import com.ecommerce.backoffice.domain.product.enums.ProductStatus;
 import com.ecommerce.backoffice.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,26 +34,34 @@ public class Product extends BaseEntity {
 
     // 재고
     @Column(nullable = false)
-    private Integer stock;
+    private int stock;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private ProductStatus status;
 
-    // 등록 관리자(단방향)
+    //재고 변경 및 상태 자동 갱신
+    public void updateStock(int newStock) {
+        this.stock = newStock;
+        updateStatusByStock();
+    }
+
+    // 등록 관리자명(단방향)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_admin_id", nullable = false)
     private Admin createdBy;
 
-    public Product(String name, ProductCategory category, Long price, Integer stock, ProductStatus status, Admin createdBy) {
+    @Builder
+    public Product(String name, ProductCategory category, Long price, int stock, ProductStatus status, Admin createdBy) {
         this.name = name;
         this.category = category;
         this.price = price;
-        this.stock = stock;
+        this.updateStock(stock);
         this.status = status;
         this.createdBy = createdBy;
     }
 
+    //상품 수정
     public void updateProduct(String name, ProductCategory category, Long price){
         this.name = name;
         this.category = category;

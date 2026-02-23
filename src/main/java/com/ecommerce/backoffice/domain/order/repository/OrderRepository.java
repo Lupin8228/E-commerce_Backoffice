@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long>, OrderRepositoryCustom {
     List<Order> findByCustomerId(Long customerId);
 
     @Query("""
@@ -67,6 +67,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
         JOIN o.product p
         WHERE o.deleted = false
         ORDER BY o.createdAt DESC
+        LIMIT 10
         """)
-    List<RecentOrderResponse> findRecentOrders(Pageable pageable);
+    List<RecentOrderResponse> findRecentOrders();
 }

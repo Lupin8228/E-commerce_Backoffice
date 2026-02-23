@@ -42,7 +42,22 @@ public enum CommonError {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A2014", "유효하지 않은 토큰입니다."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "A2015", "만료된 토큰입니다."),
     UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "A2016", "지원되지 않는 토큰 형식입니다."),
-    EMPTY_TOKEN(HttpStatus.UNAUTHORIZED, "A2017", "토큰이 존재하지 않습니다.");
+    EMPTY_TOKEN(HttpStatus.UNAUTHORIZED, "A2017", "토큰이 존재하지 않습니다."),
+
+    // -- 3000: Customer --
+    CUSTOMER_NOT_FOUND(BAD_REQUEST,"C3001","존재하지 않는 유저입니다."),
+    INVALID_CUSTOMER_UPDATE(BAD_REQUEST,"C3002","유효하지 않은 유저 정보 또는 상태 변경 요청입니다."),
+
+    // -- 4000: ORDER --
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "O4001", "존재하지 않는 주문입니다."),
+    ORDER_ALREADY_DELIVERED(BAD_REQUEST, "O4002", "배송완료된 주문은 상태를 변경할 수 없습니다."),
+    ORDER_ALREADY_CANCELLED(BAD_REQUEST, "O4003", "취소된 주문은 상태를 변경할 수 없습니다."),
+    ORDER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "O4004", "해당 주문에 접근할 권한이 없습니다."),
+    INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "O4005", "잘못된 주문 양식입니다."),
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "O4006", "상품을 찾을 수 없습니다."),
+    PRODUCT_OUT_OF_STOCK(HttpStatus.BAD_REQUEST, "O4007", "해당 상품의 재고가 없습니다."),
+    ORDER_NOT_PREPARING(BAD_REQUEST, "O4008", "준비중 상태에서만 취소할 수 있습니다.");
+
 
     private final HttpStatus status;
     private final String code;
