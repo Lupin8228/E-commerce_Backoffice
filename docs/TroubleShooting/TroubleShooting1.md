@@ -1,4 +1,4 @@
-## 🚨 Trouble Shooting — 대시보드 조회 성능 개선
+## 🚨 Dashboard Query Optimization - 인덱스 설계를 통한 대시보드 성능 개선
 
 ### 🔎 배경
 관리자 백오피스의 대시보드 기능을 구현하면서  
@@ -159,7 +159,7 @@ spring.sql.init.continue-on-error=true
 
 ###  🎯 결말
 
-Hibernate SQL 로그와 EXPLAIN 분석을 통해  
+실제로 쿼리 성능Hibernate SQL 로그와 EXPLAIN 분석을 통해  
 실제 쿼리 실행 방식을 확인했습니다.
 
 | id | select\_type | table | partitions | type | possible\_keys | key | key\_len | ref | rows | filtered | Extra |
@@ -176,18 +176,5 @@ Hibernate SQL 로그와 EXPLAIN 분석을 통해
 
 단순 성능 개선을 넘어서
 운영 환경을 고려한 DB 초기화 구조까지 설계할 수 있었습니다.
-
----
-
-###  💡 회고
-
-이번 경험을 통해 알게 된 점:
-- 대시보드는 단순 조회 기능이 아니라 시스템 부하의 핵심 지점
-- JPA 튜닝보다 인덱스 설계가 성능에 더 큰 영향
-- soft delete 구조에서는 인덱스 전략이 필수
-- 쿼리는 코드가 아니라 데이터 구조에서 결정됨
-
-이 경험 이후 기능 구현 시
-쿼리 패턴 → 인덱스 → 코드 순으로 설계하는 습관을 갖게 되었습니다.
 
 ---

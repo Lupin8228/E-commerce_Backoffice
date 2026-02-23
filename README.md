@@ -29,27 +29,26 @@
 주문, 상품, 관리자, 고객, 리뷰 데이터를 관리하고  
 **대시보드를 통해 비즈니스 지표를 빠르게 확인**할 수 있도록 만든 백엔드 서비스입니다.
 
-단순 CRUD 구현이 아니라
-
-- ✔ 대시보드 집계 쿼리 단일화
-- ✔ DTO Projection 기반 조회 구조
-- ✔ Soft Delete 전략 적용
-- ✔ 대량 트래픽을 고려한 Repository 설계
-
-에 초점을 맞춘 **포트폴리오용 실무 구조 프로젝트**입니다.
+요구사항
+- 고객, 상품, 주문 정보를 **체계적으로 관리**할 수 있는 기능 필요
+- 상품 리뷰를 **조회하고 관리**할 수 있으며, **상품별 평점과 통계**를 제공하는 기능 필요
+- 관리자가 백오피스에 **회원가입을 요청**하고, 슈퍼 관리자가 **승인/거부**할 수 있는 기능 필요
+- 관리자 계정의 **역할 기반 액세스 제어(RBAC)** 필요
+- 데이터 증가에 따른 **검색, 정렬, 필터, 페이징** 기능 필요
+- 커머스 서비스 현황을 한눈에 파악할 수 있는 **대시보드** 기능 필요
 
 ---
 
 ## 👥 팀소개
 
-| 이름  | 역할 | 담당 |
-|-----|---|---|
-| 최길중 | Backend Developer | 주문 / 상품 / 대시보드 / 데이터 구조 설계 |
-| 박영수 | Backend Developer | 주문 / 상품 / 대시보드 / 데이터 구조 설계 |
-| 박소영 | Backend Developer | 주문 / 상품 / 대시보드 / 데이터 구조 설계 |
-| 김소현 | Backend Developer | 주문 / 상품 / 대시보드 / 데이터 구조 설계 |
-| 홍성현 | Backend Developer | 주문 / 상품 / 대시보드 / 데이터 구조 설계 |
-| 소수경 | Backend Developer | 주문 / 상품 / 대시보드 / 데이터 구조 설계 |
+| 이름  | 역할               | 담당                                                        |
+|-----|------------------|-----------------------------------------------------------|
+| 최길중 | 리더 / 관리자 / 발표 담당 | 발표자료 제작, 발표 리허설 주도        |
+| 박영수 | 인증,인가 / 관리자 | 관리자 (회원가입, 인증, 정보관리)       |
+| 박소영 | 고객 | 고객(회원가입, 로그인,리스트 조회, 상세 조회, 정보 수정, 상태 변경, 삭제)     |
+| 김소현 | 주문 / 대시보드 / 기록 담당 | 회의록 정리 / Readme 수합 및 관리 / 주문 상태 업데이트, 대시보드 구현        |
+| 홍성현 | 주문 / 발표 담당 | 발표자료 제작, 발표 리허설 주도            |
+| 소수경 | 상품 / 리뷰 | 상품(등록, 리스트/상세 조회, 수정, 재고변경, 상태변경, 삭제) / 리뷰(리스트/상세 조회, 삭제) |
 
 <br>
 
@@ -70,21 +69,21 @@
 - Soft Delete 탈퇴 처리
 
 ### Dashboard
-- 총 매출 / 기간 매출 집계
-- 주문 상태별 카운트
+- 관리자 / 고객 / 상품 / 주문 / 리뷰 카운트
+- 총 매출 / 상태별 주문 수 집계
 - 리뷰 평점 분포 차트
 - 고객 상태 분포
 - 카테고리 분포
+- 최근 주문 목록 조회
 
 ### Order
-- 주문 조회 / 상세 조회
+- 주문 생성
+- 주문 목록 / 상세 조회
 - 주문 상태 변경
-- 최근 주문 목록 조회
-- 주문번호 자동 생성
+- 주문 취소
 
 ### Product
 - 상품 등록 / 수정 / 삭제
-- 카테고리별 조회
 - 재고 관리
 
 ### Review
@@ -100,21 +99,18 @@
 
 ## 🧠 적용 기술
 
-### ✔ Backend Core
-- Spring Boot
-- Spring Data JPA
-- DTO Projection Query
-- Soft Delete (@SQLDelete)
-
-### ✔ Performance Optimization
-- 집계 쿼리 단일화
-- DTO 직접 생성 쿼리
-- 엔티티 로딩 제거
-
-### ✔ Architecture Strategy
-- Controller / Service / Repository 분리
-- BaseEntity 공통화
-- 응답 DTO 표준화
+- BaseEntity
+- JPA / JPQL
+- MySQL
+- Validation
+- 페이징 조회
+- Spring Security
+- QueryDSL
+- JWT
+- Soft Delete
+- 공통 응답 DTO
+- Builder + record
+- 전역 예외 처리 (CommonError, CommenException, GlobalExceptionHandler)
 
 ---
 
@@ -203,6 +199,7 @@ src/main/java/com/commerce/manageit/
 
 ## 🚨 Trouble Shooting
 
+👉 **[Dashboard Query Optimization - 인덱스 설계를 통한 대시보드 성능 개선](docs/TroubleShooting/TroubleShooting1.md)**
 
 ---
 
