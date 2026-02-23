@@ -37,7 +37,7 @@ public class Order extends BaseEntity {
     private Long totalPrice;
 
     @Column(nullable = false)
-    private int quantity;
+    private Integer quantity;
 
     @Column(length = 255)
     private String cancelReason;
