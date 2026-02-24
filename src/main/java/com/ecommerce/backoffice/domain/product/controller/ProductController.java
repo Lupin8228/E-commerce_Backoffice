@@ -7,6 +7,7 @@ import com.ecommerce.backoffice.domain.product.dto.response.*;
 import com.ecommerce.backoffice.domain.product.enums.ProductCategory;
 import com.ecommerce.backoffice.domain.product.enums.ProductStatus;
 import com.ecommerce.backoffice.domain.product.service.ProductService;
+import com.ecommerce.backoffice.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,10 +26,11 @@ public class ProductController {
     //상품 생성
     @PostMapping
     public ResponseEntity<CreateProductResponse> saveProduct(
-            //@RequestAttribute Long adminId,
+            @AuthenticationPrincipal UserDetailsImpl principal,
             @Valid @RequestBody CreateProductRequest request
     ){
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(1L, request));
+        Long adminId = principal.getAdmin().getId();
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(adminId, request));
     }
 
     //상품 리스트 조회
