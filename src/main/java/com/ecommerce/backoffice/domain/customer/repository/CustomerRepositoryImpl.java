@@ -22,29 +22,6 @@ import java.util.List;
 public class CustomerRepositoryImpl implements CustomerRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
-//    @Override
-//    public Page<Customer> search(String search, Pageable pageable) {
-//
-//        QCustomer customer = QCustomer.customer;
-//
-//        List<Customer> content = queryFactory
-//                .selectFrom(customer)
-//                .where(searchCondition(search),customer.deleted.eq(false))
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .orderBy(getOrderSpecifiers(pageable))
-//                .fetch();
-//
-//
-//        long total = queryFactory
-//                .select(customer.count())
-//                .from(customer)
-//                .where(searchCondition(search))
-//                .fetchOne();
-//
-//        return new PageImpl<>(content, pageable, total);
-//    }
-
     @Override
     public GetCustomerResponse findByIdWithOrderStats(Long id) {
 

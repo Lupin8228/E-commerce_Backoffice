@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +16,6 @@ import java.time.LocalDateTime;
 @Table(name = "customers")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql="UPDATE customers SET deleted = true, deleted_at=NOW() WHERE id=?")
-@SQLRestriction("deleted = false")
 public class Customer extends BaseEntity {
 
     @Id
