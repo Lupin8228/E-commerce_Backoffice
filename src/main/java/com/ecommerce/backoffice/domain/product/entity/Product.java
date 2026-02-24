@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity
 @Table(name = "products")
@@ -45,6 +47,8 @@ public class Product extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private ProductStatus status;
+
+    private LocalDateTime deleted_at;
 
     //재고 변경 및 상태 자동 갱신
     public void updateStock(int newStock) {
