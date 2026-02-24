@@ -110,18 +110,6 @@ public class OrderService {
                 () -> new CommonException(CommonError.ORDER_NOT_FOUND)
         );
 
-        return new GetOrderResponse(
-                order.getOrderNumber(),
-                order.getCustomer().getName(),
-                order.getCustomer().getEmail(),
-                order.getProduct().getName(),
-                order.getQuantity(),
-                order.getTotalPrice(),
-                order.getCreatedAt(),
-                order.getStatus().name(),
-                order.getAdmin().getName(),
-                order.getAdmin().getEmail(),
-                order.getAdmin().getRole().name()
-        );
+        return GetOrderResponse.of(order);
     }
 }
