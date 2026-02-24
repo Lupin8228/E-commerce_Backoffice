@@ -47,7 +47,7 @@ public class ReviewService {
     //리뷰 리스트 조회
     @Transactional
     public GetReviewPageResponse getAllReview(
-            String search, int rating, int page, int size, String sortBy, String sort
+            String search, Integer rating, int page, int size, String sortBy, String sort
     ) {
         //정렬 (기본값: 작성일 내림차순)
         Sort.Direction direction = "asc".equalsIgnoreCase(sort) ? Sort.Direction.ASC : Sort.Direction.DESC;
@@ -71,7 +71,7 @@ public class ReviewService {
 
     //리뷰 상세 조회
     @Transactional
-    public GetDetailReviewResponse getReview(Long customerId, Long reviewId, Long productId) {
+    public GetDetailReviewResponse getReview(Long reviewId, Long productId, Long customerId) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(
                 () -> new IllegalStateException("존재하지 않는 리뷰입니다.")
         );

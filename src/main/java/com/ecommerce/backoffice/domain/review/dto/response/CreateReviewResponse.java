@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Builder
 public record CreateReviewResponse(
         Long id,
-        int rating,
+        Integer rating,
         String description,
         LocalDateTime createdAt
 ) {

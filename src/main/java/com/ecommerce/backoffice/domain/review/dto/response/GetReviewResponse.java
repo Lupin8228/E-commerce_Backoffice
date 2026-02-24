@@ -11,7 +11,7 @@ public record GetReviewResponse(
         Long productId,
         String customerName,
         String productName,
-        int rating,
+        Integer rating,
         String description,
         LocalDateTime createdAt
 ) {

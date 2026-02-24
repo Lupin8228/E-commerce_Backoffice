@@ -11,7 +11,7 @@ public record GetDetailReviewResponse(
         String customerName,
         String customerEmail,
         LocalDateTime createdAt,
-        int rating,
+        Integer rating,
         String description
 ) {
     public static GetDetailReviewResponse from(Review review, Product product, Customer customer) {
