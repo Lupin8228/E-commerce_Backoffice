@@ -5,7 +5,6 @@ import com.ecommerce.backoffice.domain.review.dto.response.GetReviewPageResponse
 import com.ecommerce.backoffice.domain.review.service.ReviewService;
 import com.ecommerce.backoffice.global.common.ApiResponse;
 import com.ecommerce.backoffice.global.security.UserDetailsImpl;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +32,7 @@ public class ReviewController {
     @GetMapping("/reviews")
     public ResponseEntity<ApiResponse<GetReviewPageResponse>> getAllReviews(
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) int rating,
+            @RequestParam(required = false) Integer rating,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,

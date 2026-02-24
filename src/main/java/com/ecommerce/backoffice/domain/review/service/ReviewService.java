@@ -47,7 +47,7 @@ public class ReviewService {
     //리뷰 리스트 조회
     @Transactional
     public GetReviewPageResponse getAllReview(
-            String search, int rating, int page, int size, String sortBy, String sort
+            String search, Integer rating, int page, int size, String sortBy, String sort
     ) {
         //정렬 (기본값: 작성일 내림차순)
         Sort.Direction direction = "asc".equalsIgnoreCase(sort) ? Sort.Direction.ASC : Sort.Direction.DESC;
