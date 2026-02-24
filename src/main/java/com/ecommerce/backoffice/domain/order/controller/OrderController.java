@@ -7,12 +7,14 @@ import com.ecommerce.backoffice.domain.order.dto.response.GetOrderResponse;
 import com.ecommerce.backoffice.domain.order.dto.response.GetOrdersResponse;
 import com.ecommerce.backoffice.domain.order.service.OrderService;
 import com.ecommerce.backoffice.global.common.ApiResponse;
+import com.ecommerce.backoffice.global.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,9 +27,11 @@ public class OrderController {
     // 주문 POST
     @PostMapping
     public ResponseEntity<ApiResponse<CreateOrderResponse>> saveOrder(
+            @AuthenticationPrincipal UserDetailsImpl principal,
             @Valid @RequestBody CreateOrderRequest request
     ) {
-        CreateOrderResponse response = orderService.save(request);
+        Long adminId = principal.getAdmin().getId();
+        CreateOrderResponse response = orderService.save(adminId ,request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

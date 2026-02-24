@@ -26,6 +26,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.ecommerce.backoffice.domain.admin.entity.QAdmin.admin;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -36,6 +38,7 @@ public class OrderService {
     private final AdminRepository adminRepository;
     private final OrderNumberGenerator orderNumberGenerator;
 
+
     private Admin getLoginAdmin() {
         return (Admin) SecurityContextHolder.getContext()
                 .getAuthentication()
@@ -44,9 +47,10 @@ public class OrderService {
 
     // 주문 생성
     @Transactional
-    public CreateOrderResponse save(CreateOrderRequest request) {
+    public CreateOrderResponse save(Long adminId, CreateOrderRequest request) {
 
-        Admin admin = getLoginAdmin();
+        Admin admin = adminRepository.findById(adminId).orElseThrow(
+                () -> new CommonException(CommonError.ADMIN_NOT_FOUND));
 
         // 사용자 조회
         Customer customer = customerRepository.findById(request.customerId())
@@ -62,7 +66,7 @@ public class OrderService {
         }
 
         // 재고 차감
-        // product.decreeaseStock(request.quantity()); <- 아직 구현안됨
+        product.decreaseStock(request.quantity());
 
         Order order = Order.builder()
                 .orderNumber(orderNumberGenerator.generate())
