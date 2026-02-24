@@ -1,4 +1,4 @@
-package com.ecommerce.backoffice.global.config;
+package com.ecommerce.backoffice.global.security;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
