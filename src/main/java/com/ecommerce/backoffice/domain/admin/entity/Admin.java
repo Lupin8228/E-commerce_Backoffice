@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "admins")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE admins SET deleted_at = NOW() WHERE id = ?")
-@SQLRestriction("deleted_at IS NULL")
+@SQLDelete(sql = "UPDATE admins SET deleted = true, deleted_at = NOW() WHERE id = ?")
+@SQLRestriction("deleted = false")
 public class Admin extends BaseEntity {
 
     @Column(name = "deleted_at")
