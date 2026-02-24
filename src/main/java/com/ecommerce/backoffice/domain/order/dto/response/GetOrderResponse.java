@@ -20,7 +20,7 @@ public record GetOrderResponse(
         String adminEmail,
         String adminGrade
 ) {
-    public static GetOrdersResponse of(Order order) {
+    public static GetOrderResponse of(Order order) {
         String adminEmail = null;
         if(order.getAdmin() != null) {
             adminEmail = order.getAdmin().getEmail();
@@ -36,7 +36,7 @@ public record GetOrderResponse(
             productName = order.getProduct().getName();
         }
 
-        return GetOrdersResponse.builder()
+        return GetOrderResponse.builder()
                 .orderNumber(order.getOrderNumber())
                 .customer(customerName)
                 .product(productName)
