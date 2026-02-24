@@ -1,4 +1,4 @@
-package com.ecommerce.backoffice.global.config;
+package com.ecommerce.backoffice.global.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

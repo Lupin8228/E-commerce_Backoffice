@@ -1,9 +1,7 @@
 package com.ecommerce.backoffice.domain.admin.dto.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import com.ecommerce.backoffice.domain.admin.enums.AdminRole;
+import jakarta.validation.constraints.*;
 
 public record AdminSignUpRequest(
         @NotBlank(message = "이름은 필수 입력 항목입니다.")
@@ -19,6 +17,9 @@ public record AdminSignUpRequest(
 
         @NotBlank(message = "전화번호는 필수 입력 항목입니다.")
         @Pattern(regexp = "^010-\\d{4}-\\d{4}$", message = "전화번호 형식(010-XXXX-XXXX)을 확인해주세요.")
-        String phone
+        String phone,
+
+        @NotNull(message = "역할 선택은 필수입니다.") // Enum이므로 @NotBlank 대신 @NotNull 사용
+        AdminRole role
 ) {
 }

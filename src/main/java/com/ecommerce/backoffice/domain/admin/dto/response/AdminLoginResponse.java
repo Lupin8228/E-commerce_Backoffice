@@ -9,14 +9,16 @@ public record AdminLoginResponse(
         Long id,
         String name,
         String email,
-        AdminRole role
+        AdminRole role,
+        String token
 ) {
-    public static AdminLoginResponse from(Admin admin) {
+    public static AdminLoginResponse from(Admin admin, String token) {
         return AdminLoginResponse.builder()
                 .id(admin.getId())
                 .name(admin.getName())
                 .email(admin.getEmail())
                 .role(admin.getRole())
+                .token(token)
                 .build();
     }
 }

@@ -45,7 +45,8 @@ public class CustomerController {
     }
     // 단건 조회
     @GetMapping("/api/customers/{id}")
-    public ResponseEntity<ApiResponse<GetCustomerResponse>> getCustomer(@PathVariable Long id)
+    public ResponseEntity<ApiResponse<GetCustomerResponse>> getCustomer(
+            @PathVariable Long id)
     {
         return ResponseEntity.ok(ApiResponse.success(customerService.getCustomer(id)));
     }
@@ -56,6 +57,7 @@ public class CustomerController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateCustomerRequest request
     ) {
+
         return ResponseEntity.ok(ApiResponse.success(customerService.updateCustomer(id,request)));
     }
 
@@ -63,13 +65,15 @@ public class CustomerController {
     @PatchMapping("/api/customers/{id}/status")
     public ResponseEntity<ApiResponse<GetCustomerResponse>> updateCustomerStatus(
             @PathVariable Long id,
-            @RequestBody UpdateStatusRequest request
+            @Valid @RequestBody UpdateStatusRequest request
     ) {
         return ResponseEntity.ok(ApiResponse.success(customerService.updateStatus(id,request)));
     }
 
+    // 삭제
     @DeleteMapping("/api/customers/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteCustomer(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<Void>> deleteCustomer(
+            @PathVariable Long id){
         customerService.deleteCustomer(id);
         return ResponseEntity.ok(ApiResponse.success(null));
     }

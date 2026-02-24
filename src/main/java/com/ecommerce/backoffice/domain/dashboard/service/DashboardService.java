@@ -1,5 +1,6 @@
 package com.ecommerce.backoffice.domain.dashboard.service;
 
+import com.ecommerce.backoffice.domain.admin.entity.Admin;
 import com.ecommerce.backoffice.domain.admin.enums.AdminStatus;
 import com.ecommerce.backoffice.domain.admin.repository.AdminRepository;
 import com.ecommerce.backoffice.domain.customer.enums.CustomerStatus;
@@ -18,6 +19,8 @@ import com.ecommerce.backoffice.domain.order.enums.OrderStatus;
 import com.ecommerce.backoffice.domain.order.repository.OrderRepository;
 import com.ecommerce.backoffice.domain.product.repository.ProductRepository;
 import com.ecommerce.backoffice.domain.review.repository.ReviewRepository;
+import com.ecommerce.backoffice.global.error.CommonError;
+import com.ecommerce.backoffice.global.error.CommonException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -170,6 +173,6 @@ public class DashboardService {
      */
     private List<RecentOrderResponse> getRecentOrders() {
 
-        return orderRepository.findRecentOrders(PageRequest.of(0, 10));
+        return orderRepository.findRecentOrders();
     }
 }

@@ -1,5 +1,7 @@
 package com.ecommerce.backoffice.domain.order.service;
 
+import com.ecommerce.backoffice.domain.admin.entity.Admin;
+import com.ecommerce.backoffice.domain.admin.repository.AdminRepository;
 import com.ecommerce.backoffice.domain.order.dto.request.CancelOrderRequest;
 import com.ecommerce.backoffice.domain.order.dto.request.UpdateStatusOrderRequest;
 import com.ecommerce.backoffice.domain.order.dto.response.CancelOrderResponse;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderStatusService {
 
     private final OrderRepository orderRepository;
+    private final AdminRepository adminRepository;
 
     /**
      * 주문 상태 변경

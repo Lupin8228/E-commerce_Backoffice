@@ -3,8 +3,6 @@ package com.ecommerce.backoffice.domain.admin.service;
 
 import com.ecommerce.backoffice.domain.admin.dto.request.*;
 import com.ecommerce.backoffice.domain.admin.dto.response.*;
-import com.ecommerce.backoffice.domain.admin.dto.session.SessionAdmin;
-import com.ecommerce.backoffice.domain.admin.dto.session.SessionKey;
 import com.ecommerce.backoffice.domain.admin.dto.session.TimeProvider;
 import com.ecommerce.backoffice.domain.admin.entity.Admin;
 import com.ecommerce.backoffice.domain.admin.enums.AdminRole;
@@ -12,6 +10,7 @@ import com.ecommerce.backoffice.domain.admin.enums.AdminStatus;
 import com.ecommerce.backoffice.domain.admin.repository.AdminRepository;
 import com.ecommerce.backoffice.global.error.CommonError;
 import com.ecommerce.backoffice.global.error.CommonException;
+import com.ecommerce.backoffice.global.security.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +28,13 @@ public class AdminService {
     private final AdminRepository adminRepository;
     private final TimeProvider timeProvider;
     private final PasswordEncoder passwordEncoder;
+    private final JwtProvider jwtProvider;
 
+    // 회원가입
     @Transactional
     public AdminSignUpResponse signUp(AdminSignUpRequest request) {
         if (adminRepository.existsByEmail(request.email())) {
-            throw new CommonException(CommonError.INVALID_PASSWORD);
+            throw new CommonException(CommonError.DUPLICATE_EMAIL);
         }
 
         String encodePassword = passwordEncoder.encode(request.password());
@@ -43,7 +44,7 @@ public class AdminService {
                         .email(request.email())
                         .password(encodePassword)
                         .phone(request.phone())
-                        .role(AdminRole.CS_ADMIN)
+                        .role(request.role())
                         .status(AdminStatus.PENDING)
                         .build()
         );
@@ -51,9 +52,9 @@ public class AdminService {
         return AdminSignUpResponse.from(newAdmin);
     }
 
-
+    // 로그인
     @Transactional(readOnly = true)
-    public AdminLoginResponse login(AdminLoginRequest request, HttpServletRequest sessionRequest) {
+    public AdminLoginResponse login(AdminLoginRequest request) {
         Admin admin = adminRepository.findByEmail(request.email()).orElseThrow(
                 () -> new CommonException(CommonError.USER_NOT_FOUND)
         );
@@ -71,16 +72,32 @@ public class AdminService {
             }
         }
 
-        HttpSession session = sessionRequest.getSession(true);
-        session.setAttribute("LOGIN_ADMIN", SessionAdmin.from(admin));
+        String token = jwtProvider.createToken(
+                admin.getId(),
+                admin.getEmail(),
+                admin.getRole()
+        );
 
-        return AdminLoginResponse.from(admin);
+//        HttpSession session = sessionRequest.getSession(true);
+//        session.setAttribute("ADMIN_ID", admin.getId());
+//        session.setAttribute("ADMIN_EMAIL", admin.getEmail());
+//        session.setAttribute("ADMIN_ROLE", admin.getRole());
+
+        return AdminLoginResponse.from(admin, token);
+    }
+
+    // 로그아웃
+    public void logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            session.invalidate();
+        }
     }
 
     // 쿼리 파라 미터 조회
     @Transactional(readOnly = true)
-    public GetAdminListResponse getAllAdmins(HttpSession session, String keyword, Integer page, Integer size, String sortBy, String sortDir, String role, String status) {
-        SessionKey.checkSuperAdmin(session);
+    public GetAdminListResponse getAllAdmins(String keyword, Integer page, Integer size, String sortBy, String sortDir, String role, String status) {
         int safePage = (page == null || page < 1) ? 1 : page;
         int safeSize = (size == null || size < 1) ? 10 : size;
 
@@ -100,8 +117,7 @@ public class AdminService {
 
     // 관리자 상세 조회
     @Transactional(readOnly = true)
-    public GetAdminDetailResponse getOne(HttpSession session, Long adminId) {
-        SessionKey.checkSuperAdmin(session);
+    public GetAdminDetailResponse getOne(Long adminId) {
         Admin admin = findById(adminId);
         return GetAdminDetailResponse.from(admin);
     }
@@ -115,8 +131,7 @@ public class AdminService {
 
     // 관리자 정보 수정
     @Transactional
-    public UpdateAdminResponse updateAdminInfo(HttpSession session, Long adminId, UpdateAdminRequest requestBody) {
-        SessionKey.checkSuperAdmin(session);
+    public UpdateAdminResponse updateAdminInfo(Long adminId, UpdateAdminRequest requestBody) {
         Admin admin = adminRepository.findById(adminId).orElseThrow(
                 () -> new CommonException(CommonError.ADMIN_NOT_FOUND)
         );
@@ -145,8 +160,7 @@ public class AdminService {
 
     // 관리자 역할 변경
     @Transactional
-    public UpdateAdminRoleResponse updateAdminRole(HttpSession session, Long adminId, UpdateAdminRoleRequest requestBody) {
-        SessionKey.checkSuperAdmin(session);
+    public UpdateAdminRoleResponse updateAdminRole(Long adminId, UpdateAdminRoleRequest requestBody) {
         Admin admin = adminRepository.findById(adminId).orElseThrow(
                 () -> new CommonException(CommonError.ADMIN_NOT_FOUND)
         );
@@ -156,8 +170,7 @@ public class AdminService {
 
     // 관리자 상태 변경
     @Transactional
-    public PatchAdminStatusChangeResponse changeStatus(HttpSession session, Long adminId, PatchAdminStatusChangeRequest requestBody) {
-        SessionKey.checkSuperAdmin(session);
+    public PatchAdminStatusChangeResponse changeStatus(Long adminId, PatchAdminStatusChangeRequest requestBody) {
         Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(
                         () -> new CommonException(CommonError.ADMIN_NOT_FOUND)
@@ -169,8 +182,7 @@ public class AdminService {
 
     // 관리자 삭제
     @Transactional
-    public void deleteAdmin(HttpSession session, Long adminId) {
-        SessionKey.checkSuperAdmin(session);
+    public void deleteAdmin(Long adminId) {
         Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(() -> new CommonException(CommonError.ADMIN_NOT_FOUND));
         adminRepository.delete(admin);
@@ -178,8 +190,7 @@ public class AdminService {
 
     // 관리자 승인
     @Transactional
-    public PatchDecisionAdminResponse approveAdmin(HttpSession session, Long adminId) {
-        SessionKey.checkSuperAdmin(session);
+    public PatchDecisionAdminResponse approveAdmin( Long adminId) {
         Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(
                         () -> new CommonException(CommonError.ADMIN_NOT_FOUND)
@@ -193,8 +204,7 @@ public class AdminService {
 
     // 관리자 거부
     @Transactional
-    public PatchDecisionAdminResponse rejectAdmin(HttpSession session, Long adminId, PatchRejectAdminRequest requestBody) {
-        SessionKey.checkSuperAdmin(session);
+    public PatchDecisionAdminResponse rejectAdmin(Long adminId, PatchRejectAdminRequest requestBody) {
         Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(
                         () -> new CommonException(CommonError.ADMIN_NOT_FOUND)
@@ -210,8 +220,8 @@ public class AdminService {
 
     // 내 프로필 조회
     @Transactional(readOnly = true)
-    public GetProfileResponse getProfile(HttpSession session, Long id) {
-        Admin admin = adminRepository.findById(id).orElseThrow(
+    public GetProfileResponse getProfile(Long meId) {
+        Admin admin = adminRepository.findById(meId).orElseThrow(
                 () -> new CommonException(CommonError.ADMIN_NOT_FOUND)
         );
         return new GetProfileResponse(admin.getName(), admin.getEmail(), admin.getPhone());
@@ -219,8 +229,8 @@ public class AdminService {
 
     // 내 프로필 수정
     @Transactional
-    public UpdateProfileResponse updateProfile(HttpSession session, Long id, UpdateProfileRequest requestBody) {
-        Admin admin = adminRepository.findById(id)
+    public UpdateProfileResponse updateProfile(Long meId, UpdateProfileRequest requestBody) {
+        Admin admin = adminRepository.findById(meId)
                 .orElseThrow(
                         () -> new CommonException(CommonError.ADMIN_NOT_FOUND)
                 );
@@ -236,7 +246,7 @@ public class AdminService {
         String newPhone = (requestBody.phone() == null) ? admin.getPhone() : requestBody.phone();
 
         if (requestBody.email() != null) {
-            boolean duplicated = adminRepository.existsByEmailAndIdNot(newEmail, id);
+            boolean duplicated = adminRepository.existsByEmailAndIdNot(newEmail, meId);
             if (duplicated) {
                 throw new CommonException(CommonError.DUPLICATE_EMAIL);
             }
@@ -248,9 +258,9 @@ public class AdminService {
 
     // 내 비밀 번호 변경
     @Transactional
-    public UpdatePasswordResponse changePassword(HttpSession session, Long id, UpdatePasswordRequest requestBody) {
+    public UpdatePasswordResponse changePassword(Long meId, UpdatePasswordRequest requestBody) {
 
-        Admin admin = adminRepository.findById(id).orElseThrow(
+        Admin admin = adminRepository.findById(meId).orElseThrow(
                 () -> new CommonException(CommonError.ADMIN_NOT_FOUND)
         );
 
