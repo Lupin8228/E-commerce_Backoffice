@@ -133,8 +133,6 @@ public class ProductService {
                 () -> new IllegalStateException("상품이 존재하지 않습니다.")
         );
 
-        //삭제할때 댓글도 같이 삭제하게 만들기
-
         productRepository.deleteById(productId);
     }
 

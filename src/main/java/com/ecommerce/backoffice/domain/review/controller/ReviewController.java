@@ -3,6 +3,7 @@ package com.ecommerce.backoffice.domain.review.controller;
 import com.ecommerce.backoffice.domain.review.dto.response.GetDetailReviewResponse;
 import com.ecommerce.backoffice.domain.review.dto.response.GetReviewPageResponse;
 import com.ecommerce.backoffice.domain.review.service.ReviewService;
+import com.ecommerce.backoffice.global.common.ApiResponse;
 import com.ecommerce.backoffice.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class ReviewController {
 
     //리뷰 목록 조회
     @GetMapping("/reviews")
-    public ResponseEntity<GetReviewPageResponse> getAllReviews(
+    public ResponseEntity<ApiResponse<GetReviewPageResponse>> getAllReviews(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) int rating,
             @RequestParam(defaultValue = "1") int page,
@@ -39,30 +40,30 @@ public class ReviewController {
             @RequestParam(defaultValue = "desc") String sort
     ){
         GetReviewPageResponse response = reviewService.getAllReview(search, rating, page, size, sortBy, sort);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     //리뷰 상세 조회
     @GetMapping("/{productId}/reviews/{id}")
-    public ResponseEntity<GetDetailReviewResponse> getDetailReview(
+    public ResponseEntity<ApiResponse<GetDetailReviewResponse>> getDetailReview(
             @AuthenticationPrincipal UserDetailsImpl principal,
             @PathVariable Long productId,
             @PathVariable Long id //reviewId
     ) {
         Long customerId = principal.getAdmin().getId();
-        return ResponseEntity.status(HttpStatus.OK).body(reviewService.getReview(customerId, id, productId));
+        return ResponseEntity.ok(ApiResponse.success(reviewService.getReview(customerId, productId, id)));
     }
 
     //리뷰 삭제
     @DeleteMapping("/reviews/{id}")
-    public ResponseEntity<Void> deleteReview(
+    public ResponseEntity<ApiResponse<Void>> deleteReview(
             @AuthenticationPrincipal UserDetailsImpl principal,
             @PathVariable Long id //reviewId
     ) {
         Long adminId = principal.getAdmin().getId();
 
         reviewService.deleteReview(id, adminId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(null));
     }
 
 }
