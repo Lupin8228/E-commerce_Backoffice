@@ -17,6 +17,7 @@ import com.ecommerce.backoffice.domain.product.entity.Product;
 import com.ecommerce.backoffice.domain.product.repository.ProductRepository;
 import com.ecommerce.backoffice.global.error.CommonError;
 import com.ecommerce.backoffice.global.error.CommonException;
+import com.ecommerce.backoffice.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,13 +38,6 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final AdminRepository adminRepository;
     private final OrderNumberGenerator orderNumberGenerator;
-
-
-    private Admin getLoginAdmin() {
-        return (Admin) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
-    }
 
     // 주문 생성
     @Transactional
