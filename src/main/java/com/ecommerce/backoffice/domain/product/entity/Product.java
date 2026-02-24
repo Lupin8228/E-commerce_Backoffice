@@ -4,6 +4,8 @@ import com.ecommerce.backoffice.domain.admin.entity.Admin;
 import com.ecommerce.backoffice.domain.product.enums.ProductCategory;
 import com.ecommerce.backoffice.domain.product.enums.ProductStatus;
 import com.ecommerce.backoffice.global.common.BaseEntity;
+import com.ecommerce.backoffice.global.error.CommonError;
+import com.ecommerce.backoffice.global.error.CommonException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -83,5 +85,13 @@ public class Product extends BaseEntity {
         } else {
             this.status = ProductStatus.ON_SALE;
         }
+    }
+
+    // 재고 관리
+    public void decreaseStock(int quantity) {
+        if(this.stock < quantity) {
+            throw new CommonException(CommonError.PRODUCT_OUT_OF_STOCK);
+        }
+        this.stock -= quantity;
     }
 }
