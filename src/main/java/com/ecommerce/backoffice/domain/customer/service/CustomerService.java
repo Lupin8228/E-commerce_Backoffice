@@ -42,7 +42,7 @@ public class CustomerService {
     @Transactional
     public GetCustomerResponse updateCustomer(Long id, UpdateCustomerRequest request) {
 
-        Customer customer = customerRepository.findByIdAndDeletedFalse(id).orElseThrow(
+        Customer customer = customerRepository.findById(id).orElseThrow(
                 ()->new CommonException(CommonError.CUSTOMER_NOT_FOUND));
 
         // 업데이트 할 데이터가 존재하지 않는 경우 에러
@@ -66,7 +66,7 @@ public class CustomerService {
     public GetCustomerResponse updateStatus(Long id, UpdateStatusRequest request) {
         CustomerStatus status = request.toCustomerStatus();
 
-        Customer customer = customerRepository.findByIdAndDeletedFalse(id).orElseThrow(
+        Customer customer = customerRepository.findById(id).orElseThrow(
                 ()->new CommonException(CommonError.CUSTOMER_NOT_FOUND));
         // 만약 기존 상태와 같은 상태로 업데이트 요청이 들어오면 쿼리문은 날리지 않는것이..?
         customer.updateStatus(status);
@@ -75,7 +75,7 @@ public class CustomerService {
 
     @Transactional
     public void deleteCustomer(Long id) {
-        Customer customer = customerRepository.findByIdAndDeletedFalse(id)
+        Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new CommonException(CommonError.CUSTOMER_NOT_FOUND));
 
         customerRepository.delete(customer);

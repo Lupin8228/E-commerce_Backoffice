@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long>,CustomerRepositoryCustom{
-    Optional<Customer> findByIdAndDeletedFalse(Long id);
     boolean existsByEmailAndIdNot(String email, Long id);
 
     Long countByDeletedFalse();
