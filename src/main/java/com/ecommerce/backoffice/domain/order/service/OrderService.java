@@ -66,7 +66,7 @@ public class OrderService {
         }
 
         // 재고 차감
-        product.increaseStock(request.quantity());
+        product.decreaseStock(request.quantity());
 
         Order order = Order.builder()
                 .orderNumber(orderNumberGenerator.generate())
