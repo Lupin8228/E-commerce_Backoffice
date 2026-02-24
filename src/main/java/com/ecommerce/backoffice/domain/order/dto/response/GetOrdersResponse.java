@@ -18,16 +18,31 @@ public record GetOrdersResponse(
         String admin
 ) {
     public static GetOrdersResponse of(Order order) {
+        String adminEmail = null;
+        if(order.getAdmin() != null) {
+            adminEmail = order.getAdmin().getEmail();
+        }
+
+        String customerName = null;
+        if(order.getCustomer() != null) {
+            customerName = order.getCustomer().getName();
+        }
+
+        String productName = null;
+        if(order.getProduct() != null) {
+            productName = order.getProduct().getName();
+        }
+
         return GetOrdersResponse.builder()
                 .id(order.getId())
                 .orderNumber(order.getOrderNumber())
-                .customer(order.getCustomer().getName())
-                .product(order.getProduct().getName())
+                .customer(customerName)
+                .product(productName)
                 .quantity(order.getQuantity())
                 .totalPrice(order.getTotalPrice())
                 .createdAt(order.getCreatedAt())
                 .status(order.getStatus().name())
-                .admin(order.getAdmin().getEmail())
+                .admin(adminEmail)
                 .build();
     }
 }
