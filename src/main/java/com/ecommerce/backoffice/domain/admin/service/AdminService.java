@@ -78,22 +78,9 @@ public class AdminService {
                 admin.getRole()
         );
 
-//        HttpSession session = sessionRequest.getSession(true);
-//        session.setAttribute("ADMIN_ID", admin.getId());
-//        session.setAttribute("ADMIN_EMAIL", admin.getEmail());
-//        session.setAttribute("ADMIN_ROLE", admin.getRole());
-
         return AdminLoginResponse.from(admin, token);
     }
 
-    // 로그아웃
-    public void logout(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if (session != null) {
-            session.invalidate();
-        }
-    }
 
     // 쿼리 파라 미터 조회
     @Transactional(readOnly = true)

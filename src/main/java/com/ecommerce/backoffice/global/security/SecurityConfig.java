@@ -41,8 +41,7 @@ public class SecurityConfig {
         // 요청 권한 설정
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // 정적 리소스 허용
-                .requestMatchers("/api/admin/signup", "/api/admin/login").permitAll() // 가입, 로그인 허용
-                .requestMatchers("/error").permitAll()
+                .requestMatchers("/api/signup", "/api/login","/error").permitAll() // 가입, 로그인 허용
                 .anyRequest().authenticated() // 그 외는 모두 인증 필요
         );
 
