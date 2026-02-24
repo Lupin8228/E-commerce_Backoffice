@@ -21,15 +21,15 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             r.id, p.id, c.name, p.name, r.rating, r.description, r.createdAt
         )
         FROM Review r
-        JOIN r.order o
-        JOIN r.customer c
-        JOIN r.product p
+        LEFT JOIN r.order o
+        LEFT JOIN r.customer c
+        LEFT JOIN r.product p
         WHERE (:rating IS NULL OR r.rating = :rating)
         AND (:search IS NULL OR c.name LIKE %:search% OR p.name LIKE %:search%)
     """)
     Page<GetReviewResponse> findAllReviews(
             @Param("search") String search,
-            @Param("rating") int rating,
+            @Param("rating") Integer rating,
             Pageable pageable
     );
 
