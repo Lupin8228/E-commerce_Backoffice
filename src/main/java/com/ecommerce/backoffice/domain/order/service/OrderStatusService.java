@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderStatusService {
 
     private final OrderRepository orderRepository;
-    private final AdminRepository adminRepository;
 
     /**
      * 주문 상태 변경
