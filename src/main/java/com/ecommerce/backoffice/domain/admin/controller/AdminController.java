@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin")
+@RequestMapping("/api")
 public class AdminController {
 
     private final AdminService adminService;
@@ -45,17 +45,6 @@ public class AdminController {
                 .body(ApiResponse.success(response));
     }
 
-    // 로그아웃
-    @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request) {
-        adminService.logout(request);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(ApiResponse.success(null));
-    }
-
-
     // 관리자 리스트 조회
     @PreAuthorize("hasAuthority('SUPER_ADMIN')")
     @GetMapping("/admins")
@@ -74,7 +63,7 @@ public class AdminController {
 
     // 관리자 상세 조회
     @PreAuthorize("hasAuthority('SUPER_ADMIN')")
-    @GetMapping("/{adminId}")
+    @GetMapping("/admins/{adminId}")
     public ResponseEntity<ApiResponse<GetAdminDetailResponse>> getOne(
             @PathVariable Long adminId
     ) {
@@ -84,7 +73,7 @@ public class AdminController {
 
     // 관리자 정보 수정
     @PreAuthorize("hasAuthority('SUPER_ADMIN')")
-    @PatchMapping("/{adminId}")
+    @PatchMapping("/admins/{adminId}")
     public ResponseEntity<ApiResponse<UpdateAdminResponse>> updateAdminInfo(
             @PathVariable Long adminId,
             @Valid @RequestBody UpdateAdminRequest requestBody
@@ -95,7 +84,7 @@ public class AdminController {
 
     // 관리자 역할 변경
     @PreAuthorize("hasAuthority('SUPER_ADMIN')")
-    @PatchMapping("/{adminId}/role")
+    @PatchMapping("/admins/{adminId}/role")
     public ResponseEntity<ApiResponse<UpdateAdminRoleResponse>> updateAdminRole(
             @PathVariable Long adminId,
             @Valid @RequestBody UpdateAdminRoleRequest requestBody
@@ -107,7 +96,7 @@ public class AdminController {
 
     // 관리자 상태 변경
     @PreAuthorize("hasAuthority('SUPER_ADMIN')")
-    @PatchMapping("/{adminId}/status")
+    @PatchMapping("/admins/{adminId}/status")
     public ResponseEntity<ApiResponse<PatchAdminStatusChangeResponse>> changeStatus(
             @PathVariable Long adminId,
             @Valid @RequestBody PatchAdminStatusChangeRequest requestBody
@@ -119,7 +108,7 @@ public class AdminController {
 
     // 관리자 삭제
     @PreAuthorize("hasAuthority('SUPER_ADMIN')")
-    @DeleteMapping("/{adminId}")
+    @DeleteMapping("/admins/{adminId}")
     public ResponseEntity<ApiResponse<Void>> delete(
             @PathVariable Long adminId
     ) {
@@ -129,7 +118,7 @@ public class AdminController {
 
     // 관리자 승인
     @PreAuthorize("hasAuthority('SUPER_ADMIN')")
-    @PatchMapping("/{adminId}/approve")
+    @PatchMapping("/admins/{adminId}/approve")
     public ResponseEntity<ApiResponse<PatchDecisionAdminResponse>> approve(
             @PathVariable Long adminId
     ) {
@@ -139,7 +128,7 @@ public class AdminController {
 
     // 거부
     @PreAuthorize("hasAuthority('SUPER_ADMIN')")
-    @PatchMapping("/{adminId}/reject")
+    @PatchMapping("/admins/{adminId}/reject")
     public ResponseEntity<ApiResponse<PatchDecisionAdminResponse>> reject(
             @PathVariable Long adminId,
             @Valid @RequestBody PatchRejectAdminRequest requestBody
@@ -149,7 +138,7 @@ public class AdminController {
     }
 
     // 내 프로필 조회
-    @GetMapping("/me/profile")
+    @GetMapping("/admins/me/profile")
     public ResponseEntity<ApiResponse<GetProfileResponse>> getProfile(
             @AuthenticationPrincipal UserDetailsImpl principal
     ) {
@@ -159,7 +148,7 @@ public class AdminController {
     }
 
     // 내 프로필 수정
-    @PatchMapping("/me/profile")
+    @PatchMapping("/admins/me/profile")
     public ResponseEntity<ApiResponse<UpdateProfileResponse>> updateProfile(
             @AuthenticationPrincipal UserDetailsImpl principal,
             @Valid @RequestBody UpdateProfileRequest requestBody
@@ -170,7 +159,7 @@ public class AdminController {
     }
 
     // 내 비밀 번호 변경
-    @PatchMapping("/me/password")
+    @PatchMapping("/admins/me/password")
     public ResponseEntity<ApiResponse<UpdatePasswordResponse>> changeMyPassword(
             @AuthenticationPrincipal UserDetailsImpl principal,
             @Valid @RequestBody UpdatePasswordRequest requestBody
