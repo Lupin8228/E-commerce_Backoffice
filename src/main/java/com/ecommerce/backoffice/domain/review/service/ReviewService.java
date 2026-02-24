@@ -1,11 +1,11 @@
 package com.ecommerce.backoffice.domain.review.service;
 
+import com.ecommerce.backoffice.domain.admin.entity.Admin;
+import com.ecommerce.backoffice.domain.admin.repository.AdminRepository;
 import com.ecommerce.backoffice.domain.customer.entity.Customer;
 import com.ecommerce.backoffice.domain.customer.repository.CustomerRepository;
 import com.ecommerce.backoffice.domain.product.entity.Product;
 import com.ecommerce.backoffice.domain.product.repository.ProductRepository;
-import com.ecommerce.backoffice.domain.review.dto.request.CreateReviewRequest;
-import com.ecommerce.backoffice.domain.review.dto.response.CreateReviewResponse;
 import com.ecommerce.backoffice.domain.review.dto.response.GetDetailReviewResponse;
 import com.ecommerce.backoffice.domain.review.dto.response.GetReviewPageResponse;
 import com.ecommerce.backoffice.domain.review.dto.response.GetReviewResponse;
@@ -26,6 +26,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
     private final CustomerRepository customerRepository;
+    private final AdminRepository adminRepository;
 
     //리뷰 등록
 //    @Transactional
@@ -93,14 +94,15 @@ public class ReviewService {
 
     //리뷰 삭제
     @Transactional
-    public void deleteReview(Long reviewId, Long customerId) {
+    public void deleteReview(Long reviewId, Long adminId) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(
-                () -> new IllegalStateException("댓글이 존재하지 않습니다.")
-        );
-        Customer customer = customerRepository.findById(customerId).orElseThrow(
-                () -> new IllegalStateException("존재하지 않는 고객입니다.")
+                () -> new IllegalStateException("리뷰가 존재하지 않습니다.")
         );
 
-        productRepository.deleteById(reviewId);
+        Admin admin = adminRepository.findById(adminId).orElseThrow(
+                () -> new IllegalStateException("관리자를 찾을 수 없습니다.")
+        );
+
+        reviewRepository.delete(review);
     }
 }

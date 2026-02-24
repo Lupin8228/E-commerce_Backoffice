@@ -1,19 +1,19 @@
 package com.ecommerce.backoffice.domain.review.controller;
 
-import com.ecommerce.backoffice.domain.review.dto.request.CreateReviewRequest;
-import com.ecommerce.backoffice.domain.review.dto.response.CreateReviewResponse;
 import com.ecommerce.backoffice.domain.review.dto.response.GetDetailReviewResponse;
 import com.ecommerce.backoffice.domain.review.dto.response.GetReviewPageResponse;
 import com.ecommerce.backoffice.domain.review.service.ReviewService;
+import com.ecommerce.backoffice.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/reviews")
+@RequestMapping("/api")
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -29,10 +29,8 @@ public class ReviewController {
 
 
     //리뷰 목록 조회
-    @GetMapping
+    @GetMapping("/reviews")
     public ResponseEntity<GetReviewPageResponse> getAllReviews(
-            //@RequestAttribute Long productId,
-            //@RequestAttribute Long customerId,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) int rating,
             @RequestParam(defaultValue = "1") int page,
@@ -45,22 +43,25 @@ public class ReviewController {
     }
 
     //리뷰 상세 조회
-    @GetMapping("/{id}")
+    @GetMapping("/{productId}/reviews/{id}")
     public ResponseEntity<GetDetailReviewResponse> getDetailReview(
+            @AuthenticationPrincipal UserDetailsImpl principal,
+            @PathVariable Long productId,
             @PathVariable Long id //reviewId
-            //@RequestAttribute Long productId,
-            //@RequestAttribute Long customerId
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(reviewService.getReview(1L, id, 5L));
+        Long customerId = principal.getAdmin().getId();
+        return ResponseEntity.status(HttpStatus.OK).body(reviewService.getReview(customerId, id, productId));
     }
 
     //리뷰 삭제
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/reviews/{id}")
     public ResponseEntity<Void> deleteReview(
+            @AuthenticationPrincipal UserDetailsImpl principal,
             @PathVariable Long id //reviewId
-            //@RequestAttribute Long customerId
     ) {
-        reviewService.deleteReview(id, 1L);
+        Long adminId = principal.getAdmin().getId();
+
+        reviewService.deleteReview(id, adminId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
