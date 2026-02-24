@@ -49,16 +49,7 @@ public class DashboardService {
     /**
      * 대시보드 전체 조회
      */
-    public DashboardResponse getDashboard(String email) {
-        Admin admin = adminRepository.findByEmail(email).orElseThrow(
-                () -> new CommonException(CommonError.USER_NOT_FOUND)
-        );
-
-        // 권한 체크
-        /*if (!admin.canUpdateOrderStatus(request.status())) {
-            throw new CommonException(CommonError.ADMIN_NO_PERMISSION);
-        }*/
-
+    public DashboardResponse getDashboard() {
         // Summary 통계
         DashboardSummaryResponse summary = getSummary();
         // Widgets 데이터

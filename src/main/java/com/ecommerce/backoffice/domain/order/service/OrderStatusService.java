@@ -31,16 +31,7 @@ public class OrderStatusService {
      * @return
      */
     @Transactional
-    public UpdateStatusOrderResponse updateStatusOrder(String email, Long id, UpdateStatusOrderRequest request) {
-        Admin admin = adminRepository.findByEmail(email).orElseThrow(
-                () -> new CommonException(CommonError.USER_NOT_FOUND)
-        );
-
-        // 권한 체크
-        /*if (!admin.canUpdateOrderStatus(request.status())) {
-            throw new CommonException(CommonError.ADMIN_NO_PERMISSION);
-        }*/
-
+    public UpdateStatusOrderResponse updateStatusOrder(Long id, UpdateStatusOrderRequest request) {
         // 주문 데이터 있는지 확인
         Order order = orderRepository.findById(id).orElseThrow(
                 () -> new CommonException(CommonError.ORDER_NOT_FOUND)
@@ -66,16 +57,7 @@ public class OrderStatusService {
      * @return
      */
     @Transactional
-    public CancelOrderResponse cancelOrder(String email, Long id, CancelOrderRequest request) {
-        Admin admin = adminRepository.findByEmail(email).orElseThrow(
-                () -> new CommonException(CommonError.USER_NOT_FOUND)
-        );
-
-        // 권한 체크
-        /*if (!admin.canUpdateOrderStatus(request.status())) {
-            throw new CommonException(CommonError.ADMIN_NO_PERMISSION);
-        }*/
-
+    public CancelOrderResponse cancelOrder(Long id, CancelOrderRequest request) {
         // 주문 데이터 있는지 확인
         Order order = orderRepository.findById(id).orElseThrow(
                 () -> new CommonException(CommonError.ORDER_NOT_FOUND)

@@ -28,12 +28,8 @@ public class DashboardController {
      */
     @GetMapping("/dashboard")
     public ResponseEntity<ApiResponse<DashboardResponse>> getDashboard(
-            @AuthenticationPrincipal UserDetailsImpl user
     ) {
-        String email = Optional.ofNullable(user)
-                .map(UserDetailsImpl::getUsername)
-                .orElseThrow(() -> new CommonException(CommonError.ADMIN_NOT_LOGGED_IN));
         return ResponseEntity.status(HttpStatus.OK).body(
-                ApiResponse.success(dashboardService.getDashboard(email)));
+                ApiResponse.success(dashboardService.getDashboard()));
     }
 }

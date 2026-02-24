@@ -32,15 +32,11 @@ public class OrderStatusController {
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','OPERATION_ADMIN')")
     @PatchMapping("/orders/{id}/status")
     public ResponseEntity<ApiResponse<UpdateStatusOrderResponse>> updateStutusOrder(
-            @AuthenticationPrincipal UserDetailsImpl user,
             @PathVariable Long id,
             @Valid @RequestBody UpdateStatusOrderRequest request
     ) {
-        String email = Optional.ofNullable(user)
-                .map(UserDetailsImpl::getUsername)
-                .orElseThrow(() -> new CommonException(CommonError.ADMIN_NOT_LOGGED_IN));
         return ResponseEntity.status(HttpStatus.OK).body(
-                ApiResponse.success(orderStatusService.updateStatusOrder(email, id, request)));
+                ApiResponse.success(orderStatusService.updateStatusOrder(id, request)));
     }
 
     /**
@@ -49,14 +45,10 @@ public class OrderStatusController {
     @PreAuthorize("hasAnyRole('SUPER_ADMIN','CS_ADMIN')")
     @PatchMapping("/orders/{id}/cancel")
     public ResponseEntity<ApiResponse<CancelOrderResponse>> cancelOrder(
-            @AuthenticationPrincipal UserDetailsImpl user,
             @PathVariable Long id,
             @Valid @RequestBody CancelOrderRequest request
     ) {
-        String email = Optional.ofNullable(user)
-                .map(UserDetailsImpl::getUsername)
-                .orElseThrow(() -> new CommonException(CommonError.ADMIN_NOT_LOGGED_IN));
         return ResponseEntity.status(HttpStatus.OK).body(
-                ApiResponse.success(orderStatusService.cancelOrder(email, id, request)));
+                ApiResponse.success(orderStatusService.cancelOrder(id, request)));
     }
 }
