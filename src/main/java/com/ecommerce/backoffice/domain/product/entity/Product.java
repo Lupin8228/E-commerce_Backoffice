@@ -70,6 +70,12 @@ public class Product extends BaseEntity {
         this.price = price;
     }
 
+    //상품 상태 수정
+    public void updateStatus(ProductStatus status, int stock){
+        this.status = status;
+        this.stock = stock;
+    }
+
     public void increaseStock(int quantity) {
         this.stock += quantity;
     }

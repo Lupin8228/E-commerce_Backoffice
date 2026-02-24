@@ -28,20 +28,20 @@ public class ReviewService {
     private final CustomerRepository customerRepository;
 
     //리뷰 등록
-    @Transactional
-    public CreateReviewResponse createReview(Long productId, CreateReviewRequest request) {
-        productRepository.findById(productId).orElseThrow(
-                () -> new IllegalStateException("존재하지 않는 상품입니다.")
-        );
-
-        Review savedReview = reviewRepository.save(
-                Review.builder()
-                        .rating(request.rating())
-                        .description(request.description())
-                        .build()
-        );
-        return CreateReviewResponse.from(savedReview);
-    }
+//    @Transactional
+//    public CreateReviewResponse createReview(Long productId, CreateReviewRequest request) {
+//        productRepository.findById(productId).orElseThrow(
+//                () -> new IllegalStateException("존재하지 않는 상품입니다.")
+//        );
+//
+//        Review savedReview = reviewRepository.save(
+//                Review.builder()
+//                        .rating(request.rating())
+//                        .description(request.description())
+//                        .build()
+//        );
+//        return CreateReviewResponse.from(savedReview);
+//    }
 
     //리뷰 리스트 조회
     @Transactional
