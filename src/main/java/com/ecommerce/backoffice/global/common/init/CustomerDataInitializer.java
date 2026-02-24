@@ -36,8 +36,7 @@ public class CustomerDataInitializer implements CommandLineRunner {
                     random.nextBoolean() ? CustomerStatus.ACTIVE : CustomerStatus.INACTIVE;
 
             Customer customer = Customer.builder()
-                    .name(faker.name().fullName())
-                    .email("customer" + (i+1) + "@test.com") // unique 보장
+                    .name(faker.name().fullName().replace(" ", ""))                    .email("customer" + (i+1) + "@test.com") // unique 보장
                     .phone(generatePhoneNumber(random))
                     .status(status)
                     .build();
