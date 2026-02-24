@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -13,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -38,12 +40,26 @@ public class SecurityConfig {
                 session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
-        // 요청 권한 설정
+        // 요청 권한 설정 (접두사 필요? hasRole(), hasAnyRole() : hasAuthority(), hasAnyAuthority() )
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // 정적 리소스 허용
                 .requestMatchers("/api/signup", "/api/login","/error").permitAll() // 가입, 로그인 허용
+                // 1. 관리자 관리 API (슈퍼 관리자 전용)
+                // /api/admin/admins, /api/admin/{adminId} 등 관리자 관련 모든 경로는 SUPER_ADMIN만
+                .requestMatchers("/api/admins/**", "/api/admins/{adminId}/**").hasAuthority("SUPER_ADMIN")
+
+                // 2. 상품 관리 API (슈퍼 관리자, 운영 관리자)
+                // 예: /api/products 경로는 두 역할 모두 가능
+                .requestMatchers("/api/products/**").hasAnyAuthority("SUPER_ADMIN", "OPERATION_ADMIN")
+
+                // 3. 주문 관리 API (모든 관리자 가능)
+                .requestMatchers("/api/orders/**").hasAnyAuthority("SUPER_ADMIN", "OPERATION_ADMIN", "CS_ADMIN")
                 .anyRequest().authenticated() // 그 외는 모두 인증 필요
         );
+
+//        http.exceptionHandling(exception -> exception
+//                .accessDeniedHandler(accessDeniedHandler)
+//        );
 
         // JWT 필터 배치 (가장 중요!)
         // UsernamePasswordAuthenticationFilter(기본 로그인 필터) 전에 우리 문지기를 세웁니다.

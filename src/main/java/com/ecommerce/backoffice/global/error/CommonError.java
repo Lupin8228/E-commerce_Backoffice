@@ -43,6 +43,7 @@ public enum CommonError {
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "A2015", "만료된 토큰입니다."),
     UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "A2016", "지원되지 않는 토큰 형식입니다."),
     EMPTY_TOKEN(HttpStatus.UNAUTHORIZED, "A2017", "토큰이 존재하지 않습니다."),
+    CANNOT_CHANGE_OWN_ROLE(HttpStatus.UNAUTHORIZED, "A2018", "관리자 역할을 변경할 수 없습니다."),
 
     // -- 3000: Customer --
     CUSTOMER_NOT_FOUND(HttpStatus.BAD_REQUEST,"C3001","존재하지 않는 유저입니다."),
