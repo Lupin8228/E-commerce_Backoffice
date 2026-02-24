@@ -21,7 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             p.id, p.name, p.category, p.price, p.stock, p.status, p.createdAt, a.name
         )
         FROM Product p
-        JOIN p.createdBy a
+        LEFT JOIN p.createdBy a
         WHERE (:name IS NULL OR p.name LIKE %:name%)
         AND (:category IS NULL OR p.category = :category)
         AND (:status IS NULL OR p.status = :status)
