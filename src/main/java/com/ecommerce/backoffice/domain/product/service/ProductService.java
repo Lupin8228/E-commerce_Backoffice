@@ -4,6 +4,7 @@ import com.ecommerce.backoffice.domain.admin.entity.Admin;
 import com.ecommerce.backoffice.domain.admin.repository.AdminRepository;
 import com.ecommerce.backoffice.domain.product.dto.request.CreateProductRequest;
 import com.ecommerce.backoffice.domain.product.dto.request.UpdateProductRequest;
+import com.ecommerce.backoffice.domain.product.dto.request.UpdateProductStatusRequest;
 import com.ecommerce.backoffice.domain.product.dto.response.*;
 import com.ecommerce.backoffice.domain.product.entity.Product;
 import com.ecommerce.backoffice.domain.product.enums.ProductCategory;
@@ -42,10 +43,10 @@ public class ProductService {
         Product savedProduct = productRepository.save(
                 Product.builder()
                         .name(request.name())
-                        .category(ProductCategory.ELECTRONICS)
+                        .category(request.category())
                         .price(request.price())
                         .stock(request.stock())
-                        .status(ProductStatus.ON_SALE)
+                        .status(request.status())
                         .createdBy(admin)
                         .build()
         );
@@ -108,6 +109,21 @@ public class ProductService {
         );
 
         return UpdateProductResponse.from(product);
+    }
+
+    //상품 상태 수정
+    @Transactional
+    public UpdateProductStatusResponse updateStatus(Long productId, UpdateProductStatusRequest request) {
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new IllegalStateException("없는 상품입니다.")
+        );
+
+        product.updateStatus(
+                request.status(),
+                request.stock()
+        );
+
+        return UpdateProductStatusResponse.from(product);
     }
 
     //상품 삭제

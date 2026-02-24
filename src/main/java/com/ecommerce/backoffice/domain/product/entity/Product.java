@@ -46,20 +46,6 @@ public class Product extends BaseEntity {
         updateStatusByStock();
     }
 
-    private void updateStatusByStock() {
-        //단종 상태인 경우 상태를 변겅하지 않음
-        if (this.status == ProductStatus.DISCONTINUED){
-            return;
-        }
-
-        //재고에 따른 자동 전환
-        if(this.stock <= 0){
-            this.status = ProductStatus.OUT_OF_STOCK;
-        } else {
-            this.status = ProductStatus.ON_SALE;
-        }
-    }
-
     // 등록 관리자명(단방향)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_admin_id", nullable = false)
@@ -80,6 +66,12 @@ public class Product extends BaseEntity {
         this.name = name;
         this.category = category;
         this.price = price;
+    }
+
+    //상품 상태 수정
+    public void updateStatus(ProductStatus status, int stock){
+        this.status = status;
+        this.stock = stock;
     }
 
     public void increaseStock(int quantity) {

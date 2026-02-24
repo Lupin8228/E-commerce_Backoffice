@@ -2,6 +2,7 @@ package com.ecommerce.backoffice.domain.product.controller;
 
 import com.ecommerce.backoffice.domain.product.dto.request.CreateProductRequest;
 import com.ecommerce.backoffice.domain.product.dto.request.UpdateProductRequest;
+import com.ecommerce.backoffice.domain.product.dto.request.UpdateProductStatusRequest;
 import com.ecommerce.backoffice.domain.product.dto.response.*;
 import com.ecommerce.backoffice.domain.product.enums.ProductCategory;
 import com.ecommerce.backoffice.domain.product.enums.ProductStatus;
@@ -10,17 +11,19 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductService productService;
 
     //상품 생성
-    @PostMapping("/products")
+    @PostMapping
     public ResponseEntity<CreateProductResponse> saveProduct(
             //@RequestAttribute Long adminId,
             @Valid @RequestBody CreateProductRequest request
@@ -29,7 +32,7 @@ public class ProductController {
     }
 
     //상품 리스트 조회
-    @GetMapping("/products")
+    @GetMapping
     public ResponseEntity<GetProductPageResponse> getAllProducts(
             @RequestParam(required = false) String productName,
             @RequestParam(required = false) ProductCategory category,
@@ -44,7 +47,7 @@ public class ProductController {
     }
 
     //상품 상세 조회
-    @GetMapping("/products/{productId}")
+    @GetMapping("/{productId}")
     public ResponseEntity<GetDetailProductResponse> getDetailProduct(
             @PathVariable Long productId
     ){
@@ -52,7 +55,7 @@ public class ProductController {
     }
 
     //상품 업데이트
-    @PatchMapping("/products/{productId}")
+    @PatchMapping("/{productId}")
     public ResponseEntity<UpdateProductResponse> updateProduct(
             @PathVariable Long productId,
             @Valid @RequestBody UpdateProductRequest request
@@ -60,8 +63,17 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(productService.updateProduct(productId, request));
     }
 
+    //상품 상태 변경
+    @PatchMapping("/{productId}/status")
+    public ResponseEntity<UpdateProductStatusResponse> updateStatus(
+            @PathVariable Long productId,
+            @Valid @RequestBody UpdateProductStatusRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.updateStatus(productId, request));
+    }
+
     //상품 삭제
-    @DeleteMapping("/products/{productId}")
+    @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(
             @PathVariable Long productId
     ) {
@@ -70,7 +82,7 @@ public class ProductController {
     }
 
     //상품별 리뷰 조회
-    @GetMapping("/products/{productId}/reviews")
+    @GetMapping("/{productId}/reviews")
     public ResponseEntity<ProductReviewResponse> getProductReviews(
             @PathVariable Long productId
     ){
