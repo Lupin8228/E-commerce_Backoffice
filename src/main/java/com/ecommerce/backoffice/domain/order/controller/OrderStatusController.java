@@ -29,7 +29,7 @@ public class OrderStatusController {
     /**
      * 주문 상태 수정
      */
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN','OPERATION_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SUPER_ADMIN','OPERATION_ADMIN')")
     @PatchMapping("/orders/{id}/status")
     public ResponseEntity<ApiResponse<UpdateStatusOrderResponse>> updateStutusOrder(
             @PathVariable Long id,
@@ -42,7 +42,7 @@ public class OrderStatusController {
     /**
      * 주문 취소
      */
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN','CS_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SUPER_ADMIN','CS_ADMIN')")
     @PatchMapping("/orders/{id}/cancel")
     public ResponseEntity<ApiResponse<CancelOrderResponse>> cancelOrder(
             @PathVariable Long id,
