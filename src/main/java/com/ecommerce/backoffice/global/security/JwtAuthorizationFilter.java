@@ -41,8 +41,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             Claims info = jwtProvider.getUserInfoFromToken(token);
             log.info("JWT 인증 성공: {}", info.getSubject());
 
-            // TODO: 여기서 Spring Security의 Authentication 객체를 생성해 Context에 저장하는 로직이 추가될 예정입니다.
-            // ★ 여기가 핵심입니다! 직원을 불러서 명찰을 만들고 시큐리티 보관함에 넣습니다.
 
             UserDetails userDetails = null;
             try {

@@ -5,6 +5,8 @@ import com.ecommerce.backoffice.domain.admin.dto.request.*;
 import com.ecommerce.backoffice.domain.admin.dto.response.*;
 import com.ecommerce.backoffice.domain.admin.service.AdminService;
 import com.ecommerce.backoffice.global.common.ApiResponse;
+import com.ecommerce.backoffice.global.error.CommonError;
+import com.ecommerce.backoffice.global.error.CommonException;
 import com.ecommerce.backoffice.global.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -87,9 +89,14 @@ public class AdminController {
     @PatchMapping("/admins/{adminId}/role")
     public ResponseEntity<ApiResponse<UpdateAdminRoleResponse>> updateAdminRole(
             @PathVariable Long adminId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid @RequestBody UpdateAdminRoleRequest requestBody
 
     ) {
+        // 본인이 본인을 수정하는지 체크
+        if (userDetails.getAdmin().getId().equals(adminId)) {
+            throw new CommonException(CommonError.CANNOT_CHANGE_OWN_ROLE);
+        }
         UpdateAdminRoleResponse response = adminService.updateAdminRole(adminId, requestBody);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(response));
     }

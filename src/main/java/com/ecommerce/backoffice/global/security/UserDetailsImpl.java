@@ -25,7 +25,12 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         AdminRole role = admin.getRole();
+
+        // 접두산 확인안함 - @PreAuthorize("hasAuthority('SUPER_ADMIN')"
         String authority = role.name();
+
+        // 접두사 'ROLE_' 확인 - @PreAuthorize("hasRole('SUPER_ADMIN')"
+//        String authority = "ROLE_" + role.name(); // 스프링 시큐리티에서 내부적으로 권한 목록을 뒤질때 "ROLE_" 접두사를 확인
 
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
         Collection<GrantedAuthority> authorities = new ArrayList<>();
