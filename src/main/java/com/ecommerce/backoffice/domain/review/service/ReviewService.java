@@ -71,7 +71,7 @@ public class ReviewService {
 
     //리뷰 상세 조회
     @Transactional
-    public GetDetailReviewResponse getReview(Long customerId, Long reviewId, Long productId) {
+    public GetDetailReviewResponse getReview(Long reviewId, Long productId, Long customerId) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(
                 () -> new IllegalStateException("존재하지 않는 리뷰입니다.")
         );

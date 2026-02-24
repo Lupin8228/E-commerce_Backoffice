@@ -27,7 +27,6 @@ public class ReviewController {
 //        return ResponseEntity.status(HttpStatus.CREATED).body(reviewService.createReview(productId, request));
 //    }
 
-
     //리뷰 목록 조회
     @GetMapping("/reviews")
     public ResponseEntity<ApiResponse<GetReviewPageResponse>> getAllReviews(
@@ -43,14 +42,14 @@ public class ReviewController {
     }
 
     //리뷰 상세 조회
-    @GetMapping("/{productId}/reviews/{id}")
+    @GetMapping("/reviews/{id}")
     public ResponseEntity<ApiResponse<GetDetailReviewResponse>> getDetailReview(
             @AuthenticationPrincipal UserDetailsImpl principal,
-            @PathVariable Long productId,
-            @PathVariable Long id //reviewId
+            @PathVariable Long id, //reviewId
+            @RequestParam(name = "productId", required = true) Long productId, // 필수값 설정
+            @RequestParam(name = "customerId", required = true) Long customerId
     ) {
-        Long customerId = principal.getAdmin().getId();
-        return ResponseEntity.ok(ApiResponse.success(reviewService.getReview(customerId, productId, id)));
+        return ResponseEntity.ok(ApiResponse.success(reviewService.getReview(id, productId, customerId)));
     }
 
     //리뷰 삭제
