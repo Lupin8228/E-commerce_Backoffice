@@ -45,6 +45,7 @@ public enum CommonError {
     EMPTY_TOKEN(HttpStatus.UNAUTHORIZED, "A2017", "토큰이 존재하지 않습니다."),
     CANNOT_CHANGE_OWN_ROLE(HttpStatus.UNAUTHORIZED, "A2018", "관리자 역할을 변경할 수 없습니다."),
     PERMISSION_DENIED(HttpStatus.FORBIDDEN, "A2019", "해당 작업에 대한 접근 권한이 없습니다."),
+    UNAUTHORIZED(HttpStatus.FORBIDDEN, "A2020", "세션이 만료되었습니다. 다시 로그인해 주세요."),
 
 
     // -- 3000: Customer --
