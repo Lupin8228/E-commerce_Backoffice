@@ -172,8 +172,11 @@
 ## 🖼 API 명세서
 
 <p align="center">
-  <img src="docs/images/.png" width="80%">
+  <img src="docs/images/API_명세서.png" width="80%">
 </p>
+
+보다 자세한 API 명세서는 
+[📎프로젝트 노션](https://www.notion.so/teamsparta/2-2ff2dc3ef514805aa074fd80c0ad353d) 에서 확인 바랍니다.
 
 ---
 
@@ -229,7 +232,7 @@ src/main/java/com/commerce/manageit/
 
 ## 🚨 Trouble Shooting
 
-👉 **[Dashboard Query Optimization - 인덱스 설계를 통한 대시보드 성능 개선](docs/TroubleShooting/Dashboard_Query_Optimization.md)**
-👉 **[Session_Security_Develop - 관리자 인증/인가 방식 진화(3단계)](docs/TroubleShooting/Session_Security_Develop.md)**
+👉 **[Dashboard Query Optimization - 인덱스 설계를 통한 대시보드 성능 개선](docs/TroubleShooting/Dashboard_Query_Optimization.md)** <br>
+👉 **[Session_Security_Develop - 관리자 인증/인가 방식 진화(3단계)](docs/TroubleShooting/Session_Security_Develop.md)** <br>
 ---
 
