@@ -235,6 +235,8 @@ src/main/java/com/commerce/manageit/
 👉 **[Dashboard Query Optimization - 인덱스 설계를 통한 대시보드 성능 개선](docs/TroubleShooting/Dashboard_Query_Optimization.md)** <br>
 👉 **[Session_Security_Develop - 관리자 인증/인가 방식 진화(3단계)](docs/TroubleShooting/Session_Security_Develop.md)** <br>
 👉 **[Handling Null References in Soft Delete Relationships - Soft Delete 연관관계에서 발생한 Null 참조 처리](docs/TroubleShooting/Handling_Null_References_In_Soft_Delete_Relationships.md)** <br>
-👉 **[API Consistency - Custom AccessDeniedHandler를 통한 예외 응답 규격 통일](docs/TroubleShooting/Security_Exception.md)** <br> 
+👉 **[API Consistency - Custom AccessDeniedHandler를 통한 예외 응답 규격 통일](docs/TroubleShooting/Security_Exception.md)** <br>
+👉 **[rating 데이터 자료형 (int -> Integer)변경](docs/TroubleShooting/rating_int_Integer.md)** <br>
+
 ---
 
