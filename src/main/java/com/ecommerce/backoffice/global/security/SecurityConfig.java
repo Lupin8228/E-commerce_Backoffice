@@ -21,6 +21,7 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
     private final UserDetailsServiceImpl userDetailsService;
     private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
 
     @Bean
@@ -60,6 +61,7 @@ public class SecurityConfig {
         );
 
         http.exceptionHandling(exception -> exception
+                .authenticationEntryPoint(authenticationEntryPoint)
                 .accessDeniedHandler(accessDeniedHandler)
         );
 
