@@ -68,7 +68,6 @@ public class CustomerService {
 
         Customer customer = customerRepository.findById(id).orElseThrow(
                 ()->new CommonException(CommonError.CUSTOMER_NOT_FOUND));
-        // 만약 기존 상태와 같은 상태로 업데이트 요청이 들어오면 쿼리문은 날리지 않는것이..?
         customer.updateStatus(status);
         return customerRepository.findByIdWithOrderStats(id);
     }

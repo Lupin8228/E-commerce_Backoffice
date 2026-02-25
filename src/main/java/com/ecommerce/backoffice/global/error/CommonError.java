@@ -24,7 +24,7 @@ import org.springframework.http.HttpStatus;
 public enum CommonError {
 
     // -- 1000:  --
-
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"S1001","서버 내부 오류가 발생했습니다."),
     // -- 2000: ADMIN --
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "A2000", "존재하지 않는 계정입니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "A2001", "비밀번호가 일치하지 않습니다."),
@@ -50,6 +50,7 @@ public enum CommonError {
     // -- 3000: Customer --
     CUSTOMER_NOT_FOUND(HttpStatus.BAD_REQUEST,"C3001","존재하지 않는 유저입니다."),
     INVALID_CUSTOMER_UPDATE(HttpStatus.BAD_REQUEST,"C3002","유효하지 않은 유저 정보 또는 상태 변경 요청입니다."),
+    DUPLICATE_EMAIL_EXCEPTION(HttpStatus.BAD_REQUEST,"c3003","이미 사용중인 이메일입니다."),
 
     // -- 4000: ORDER --
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "O4001", "존재하지 않는 주문입니다."),
