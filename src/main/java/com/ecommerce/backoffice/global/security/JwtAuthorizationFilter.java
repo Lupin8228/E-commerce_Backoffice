@@ -37,7 +37,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            // 3. 토큰에서 유저 정보(Claims) 추출
+            // 토큰에서 유저 정보(Claims) 추출
             Claims info = jwtProvider.getUserInfoFromToken(token);
             log.info("JWT 인증 성공: {}", info.getSubject());
 
