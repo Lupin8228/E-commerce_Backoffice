@@ -78,7 +78,6 @@ where
 - 개발 환경마다 인덱스 누락 가능
 - 팀원 DB와 운영 DB 구조 불일치
 - 배포 시 인덱스 적용 누락 위험
-- 포트폴리오 환경에서 재현 어려움
 
 즉, 단순 인덱스 추가가 아니라  
 **운영 환경에서도 안정적으로 유지되는 구조가 필요**했습니다.
@@ -124,6 +123,10 @@ where
 `index.sql` 파일을 작성했습니다.
 
 ```sql
+DROP INDEX idx_orders_status_created ON orders;
+DROP INDEX idx_orders_status_created_price ON orders;
+DROP INDEX idx_orders_deleted_created_desc ON orders;
+
 CREATE INDEX idx_orders_status_created
     ON orders (status, created_at);
 
@@ -133,7 +136,7 @@ CREATE INDEX idx_orders_status_created_price
 CREATE INDEX idx_orders_deleted_created_desc
     ON orders (deleted, created_at DESC);
 ```
-또한 기존 인덱스 충돌을 방지하기 위해
+또한 재실행 시 이미 존재하는 인덱스를 다시 생성하는 것을 방지하기 위해
 DROP INDEX 후 생성하도록 구성했습니다.
 
 ---
@@ -164,7 +167,7 @@ type, key 등이 변경된 것을 확인했습니다.
 
 | id | select\_type | table | partitions | type | possible\_keys | key | key\_len | ref | rows | filtered | Extra |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 1 | SIMPLE | o1\_0 | null | index | idx\_orders\_status\_created,idx\_orders\_status\_created\_price | idx\_orders\_status\_created | 10 | null | 1 | 100 | Using where; Using index |
+| 1 | SIMPLE | o1\_0 | null | index | idx\_orders\_status\_created | idx\_orders\_status\_created | 10 | null | 1 | 100 | Using where; Using index |
 
 이 구조 적용 후 다음과 같은 개선 효과를 얻었습니다.
 - 대시보드 조회 시 풀 스캔 제거
