@@ -45,7 +45,7 @@ public class SecurityConfig {
         // 요청 권한 설정 (접두사 필요? hasRole(), hasAnyRole() : hasAuthority(), hasAnyAuthority() )
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // 정적 리소스 허용
-                .requestMatchers("/api/signup", "/api/login", "/error").permitAll() // 가입, 로그인 허용
+                .requestMatchers("/api/signup", "/api/login","/api/admins/me/**", "/error").permitAll() // 가입, 로그인 허용
                 // 슈퍼 관리자 전용
                 .requestMatchers("/api/admins/**", "/api/admins/{adminId}/**").hasAuthority("SUPER_ADMIN")
 
