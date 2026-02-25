@@ -54,54 +54,30 @@
 
 ---
 
-## 🚀 주요 기능
-
-### Admin
-- 관리자 회원가입/로그인/로그아웃
-- 관리자 목록/상세 조회
-- 관리자 정보 수정
-- 관리자 역할/상태 변경
-- 관리자 삭제 (Soft Delete)
-- 관리자 승인/거부 처리
-- 내 프로필 조회/수정
-- 비밀번호 변경
-
-### Customer
-- 고객 목록/상세 조회
-- 고객 정보 수정
-- 고객 상태 변경
-- 고객 삭제 (Soft Delete)
-
-### Dashboard
-- 관리자 / 고객 / 상품 / 주문 / 리뷰 카운트
-- 총 매출 / 상태별 주문 수 집계
-- 리뷰 평점 분포 차트
-- 고객 상태 분포
-- 카테고리 분포
-- 최근 주문 목록 조회
-
-### Order
-- 주문 생성
-- 주문 목록/상세 조회
-- 주문 상태 변경
-- 주문 취소
-
-### Product
-- 상품 등록
-- 상품 목록/상세 조회
-- 상품 정보 수정
-- 상품 재고/상태 변경
-- 상품 삭제 (Soft Delete)
-
-### Review
-- 리뷰 목록/상세 조회
-- 리뷰 삭제
-- 상품별 리뷰 조회
+## ⏲️ 개발기간
+- 2026.02.19(목) ~ 2026.02.26(목)
 
 ---
 
-## ⏲️ 개발기간
-- 2026.02.19(목) ~ 2026.02.26(목)
+## 🧩 Architecture
+
+<p align="center">
+  <img src="docs/images/Architecture_Diagram.png" width="80%">
+</p>
+
+---
+
+## 🔧 Technologies & Tools (BE)
+
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/> <img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white"/>
+
+<img src="https://img.shields.io/badge/SpringSecurity-6DB33F?style=for-the-badge&logo=SpringSecurity&logoColor=white"/> <img src="https://img.shields.io/badge/JSONWebToken-000000?style=for-the-badge&logo=JSONWebTokens&logoColor=white"/> 
+
+<img src="https://img.shields.io/badge/SpringDataJPA-6DB33F?style=for-the-badge&logo=spring&logoColor=white"/> <img src="https://img.shields.io/badge/QueryDSL-0769AD?style=for-the-badge&logo=java&logoColor=white"/> <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"/>
+
+<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"/> <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"/>
+
+<img src="https://img.shields.io/badge/IntelliJIDEA-000000?style=for-the-badge&logo=IntelliJIDEA&logoColor=white"/> <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white"/> <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white"/> <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"/>
 
 ---
 
@@ -148,6 +124,52 @@
 
 ---
 
+## 🚀 주요 기능
+
+### Admin
+- 관리자 회원가입/로그인/로그아웃
+- 관리자 목록/상세 조회
+- 관리자 정보 수정
+- 관리자 역할/상태 변경
+- 관리자 삭제 (Soft Delete)
+- 관리자 승인/거부 처리
+- 내 프로필 조회/수정
+- 비밀번호 변경
+
+### Customer
+- 고객 목록/상세 조회
+- 고객 정보 수정
+- 고객 상태 변경
+- 고객 삭제 (Soft Delete)
+
+### Dashboard
+- 관리자 / 고객 / 상품 / 주문 / 리뷰 카운트
+- 총 매출 / 상태별 주문 수 집계
+- 리뷰 평점 분포 차트
+- 고객 상태 분포
+- 카테고리 분포
+- 최근 주문 목록 조회
+
+### Order
+- 주문 생성
+- 주문 목록/상세 조회
+- 주문 상태 변경
+- 주문 취소
+
+### Product
+- 상품 등록
+- 상품 목록/상세 조회
+- 상품 정보 수정
+- 상품 재고/상태 변경
+- 상품 삭제 (Soft Delete)
+
+### Review
+- 리뷰 목록/상세 조회
+- 리뷰 삭제
+- 상품별 리뷰 조회
+
+---
+
 ## 🖥 Development Environment
 
 | 항목 | 버전  |
@@ -158,14 +180,6 @@
 | MySQL | 8.x |
 | JPA | Hibernate |
 | IDE | IntelliJ |
-
----
-
-## 🧩 Architecture
-
-<p align="center">
-  <img src="docs/images/Architecture_Diagram.png" width="80%">
-</p>
 
 ---
 
@@ -185,20 +199,6 @@
 <p align="center">
   <img src="docs/images/ERD_diagram.png" width="80%">
 </p>
-
----
-
-## 🔧 Technologies & Tools (BE)
-
-<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/> <img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white"/>
-
-<img src="https://img.shields.io/badge/SpringSecurity-6DB33F?style=for-the-badge&logo=SpringSecurity&logoColor=white"/> <img src="https://img.shields.io/badge/JSONWebToken-000000?style=for-the-badge&logo=JSONWebTokens&logoColor=white"/> 
-
-<img src="https://img.shields.io/badge/SpringDataJPA-6DB33F?style=for-the-badge&logo=spring&logoColor=white"/> <img src="https://img.shields.io/badge/QueryDSL-0769AD?style=for-the-badge&logo=java&logoColor=white"/> <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"/>
-
-<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"/> <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"/>
-
-<img src="https://img.shields.io/badge/IntelliJIDEA-000000?style=for-the-badge&logo=IntelliJIDEA&logoColor=white"/> <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white"/> <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white"/> <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"/>
 
 ---
 
@@ -234,5 +234,7 @@ src/main/java/com/commerce/manageit/
 
 👉 **[Dashboard Query Optimization - 인덱스 설계를 통한 대시보드 성능 개선](docs/TroubleShooting/Dashboard_Query_Optimization.md)** <br>
 👉 **[Session_Security_Develop - 관리자 인증/인가 방식 진화(3단계)](docs/TroubleShooting/Session_Security_Develop.md)** <br>
+👉 **[Handling Null References in Soft Delete Relationships - Soft Delete 연관관계에서 발생한 Null 참조 처리](docs/TroubleShooting/Handling_Null_References_In_Soft_Delete_Relationships.md)** <br>
+
 ---
 
