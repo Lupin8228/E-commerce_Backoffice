@@ -16,8 +16,13 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "customers")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql="UPDATE customers SET deleted = true, deleted_at=NOW() WHERE id=?")
-@SQLRestriction("deleted = false")
+@SQLDelete(sql = """
+    UPDATE customers
+    SET deleted = true,
+        deleted_at = NOW(),
+        email = CONCAT(email, '_deleted_', id)
+    WHERE id = ?
+""")@SQLRestriction("deleted = false")
 public class Customer extends BaseEntity {
 
     @Id
@@ -63,7 +68,11 @@ public class Customer extends BaseEntity {
         }
     }
 
-    public void updateStatus(CustomerStatus status) {
-        this.status = status;
+    public void updateStatus(CustomerStatus newStatus) {
+        // 기존 상태와 같은 상태로 업데이트 요청이 들어오면 쿼리 안나가도록 하이버네이트가 자동으로 막아주지만 명시적으로 막기
+        if (this.status == newStatus) {
+            return;
+        }
+        this.status = newStatus;
     }
 }
