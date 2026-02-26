@@ -233,8 +233,11 @@ src/main/java/com/commerce/manageit/
 ---
 
 ## 🚨 Trouble Shooting
-
 👉 **[Dashboard Query Optimization - 인덱스 설계를 통한 대시보드 성능 개선](docs/TroubleShooting/Dashboard%20Query%20Optimization.md)**
+
 👉 **[Session_Security_Develop - 관리자 인증/인가 방식 진화(3단계)](docs/TroubleShooting/Session_Security_Develop.md)**
+
+👉 **[Customer Search API - QueryDSL & Paging 설계 학습 정리](docs/TroubleShooting/Customer_QueryDSL.md)**
+
 ---
 
