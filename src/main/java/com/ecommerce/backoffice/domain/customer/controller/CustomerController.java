@@ -29,7 +29,7 @@ public class CustomerController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "CREATED_AT") CustomerSortField sortBy, // ENUM 타입(대문자)만 가능
             @RequestParam(defaultValue = "desc") String sortOrder) {
-        // TODO: 정렬 기준 => 얘도 Enum 처리 할지 고민중
+
         Sort.Direction direction =
                 sortOrder.equalsIgnoreCase("asc")
                         ? Sort.Direction.ASC
