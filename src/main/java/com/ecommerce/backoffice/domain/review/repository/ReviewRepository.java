@@ -1,0 +1,63 @@
+package com.ecommerce.backoffice.domain.review.repository;
+
+import com.ecommerce.backoffice.domain.review.dto.response.GetReviewResponse;
+import com.ecommerce.backoffice.domain.review.entity.Review;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import com.ecommerce.backoffice.domain.dashboard.dto.chart.DashboardChartItem;
+import com.ecommerce.backoffice.domain.dashboard.dto.summary.ReviewSummaryDto;
+
+import java.util.List;
+
+public interface ReviewRepository extends JpaRepository<Review, Long> {
+
+    List<Review> findByCustomerId(Long customerId);
+
+    @Query("""
+        SELECT new com.ecommerce.backoffice.domain.review.dto.response.GetReviewResponse(
+            r.id, p.id, c.name, p.name, r.rating, r.description, r.createdAt
+        )
+        FROM Review r
+        LEFT JOIN r.order o
+        LEFT JOIN r.customer c
+        LEFT JOIN r.product p
+        WHERE (:rating IS NULL OR r.rating = :rating)
+        AND (:search IS NULL OR c.name LIKE %:search% OR p.name LIKE %:search%)
+    """)
+    Page<GetReviewResponse> findAllReviews(
+            @Param("search") String search,
+            @Param("rating") Integer rating,
+            Pageable pageable
+    );
+
+    //리뷰 통계 계산용. 특정 상품의 모든 리뷰 조회
+    List<Review> findAllByProductId(Long productId);
+
+    //최신 리뷰 3개만 조회
+    List<Review> findTop3ByProductIdOrderByCreatedAtDesc(Long productId);
+
+    @Query("""
+        SELECT new com.ecommerce.backoffice.domain.dashboard.dto.summary.ReviewSummaryDto(
+            COUNT(r),
+            CAST(COALESCE(AVG(r.rating), 0) as double)
+        )
+        FROM Review r
+        WHERE r.deleted = false
+    """)
+    ReviewSummaryDto getReviewSummary();
+
+    @Query("""
+        SELECT new com.ecommerce.backoffice.domain.dashboard.dto.chart.DashboardChartItem(
+            CAST(r.rating as string),
+            COUNT(r)
+        )
+        FROM Review r
+        WHERE r.deleted = false
+        GROUP BY r.rating
+        ORDER BY r.rating
+        """)
+    List<DashboardChartItem> countRatingDistribution();
+}

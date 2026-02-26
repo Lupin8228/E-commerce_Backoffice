@@ -4,5 +4,4 @@ public record BaseErrorResponse(
         int status,
         String code,
         String errorMessage
-) {
-}
+) {}
