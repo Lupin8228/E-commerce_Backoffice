@@ -237,6 +237,7 @@ src/main/java/com/commerce/manageit/
 👉 [Handling Null References in Soft Delete Relationships - Soft Delete 연관관계에서 발생한 Null 참조 처리](docs/TroubleShooting/Handling_Null_References_In_Soft_Delete_Relationships.md) <br>
 👉 [API Consistency - Custom AccessDeniedHandler를 통한 예외 응답 규격 통일](docs/TroubleShooting/Security_Exception.md) <br>
 👉 [rating 데이터 자료형 (int -> Integer)변경](docs/TroubleShooting/rating_int_Integer.md) <br>
+👉 [Customer Search API - QueryDSL & Paging 설계 학습 정리](docs/TroubleShooting/Customer_QueryDSL.md)<br>
 
 ---
 
